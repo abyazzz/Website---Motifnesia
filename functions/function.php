@@ -1,7 +1,6 @@
 <?php
 
     require 'koneksi.php';
-    wet
 
     function query($query) { //menampilkan data
         global $conn;
