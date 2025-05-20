@@ -1,0 +1,141 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+header {
+  width: 100%;
+  top: 0;
+  height: 50px;
+  background-color: #6a4a3c;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4rem;
+  padding: 0 50px;
+  position: sticky;
+  z-index: 100;
+  box-shadow: 0 0 10px 1px rgb(128, 86, 60);
+}
+.profill {
+  width: 30px;
+  height: 30px;
+  background-image: url(PP.png);
+  background-size: contain;
+  border-radius: 40px;
+  text-decoration: none;
+}
+
+.logo {
+  font-size: 24px;
+  color: burlywood;
+}
+
+.huhu ul {
+  display: flex;
+  margin-top: 14px;
+  gap: 3rem;
+  list-style: none;
+}
+
+.huhu ul li a {
+  position: relative;
+  text-decoration: none;
+  color: black;
+  font-size: 16px;
+  font-weight: 500;
+  color: burlywood;
+  transition: 300ms;
+  padding: 0 1px;
+  margin-top: 10px;
+}
+
+.huhu ul li a:hover {
+  color: burlywood;
+}
+
+.huhu ul li a::after {
+  content: "";
+  position: absolute;
+  background-color: burlywood;
+  height: 2px;
+  width: 0%;
+  left: 0;
+  bottom: -5px;
+  transition: 300ms;
+}
+
+.huhu ul li a:hover::after {
+  width: 100%;
+}
+
+.icon-profil {
+  display: none; /* Hide icon-profil on larger screens */
+}
+
+.burger {
+  display: none;
+  cursor: pointer;
+}
+
+.burger div {
+  width: 25px;
+  height: 3px;
+  background-color: white;
+  margin: 5px;
+}
+
+@media (max-width: 768px) {
+  .huhu ul {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    background-color: #6a4a3c;
+  }
+
+  .huhu ul li {
+    text-align: center;
+    margin: 1em 0;
+  }
+
+  .burger {
+    display: block;
+  }
+
+  .huhu ul.nav-active {
+    display: flex;
+  }
+}
+
+@media (max-width: 480px) {
+  .huhu ul {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    background-color: #6a4a3c;
+  }
+
+  .huhu ul li {
+    text-align: center;
+    margin: 1em 0;
+  }
+
+  .burger {
+    display: block;
+  }
+
+  .huhu ul.nav-active {
+    display: flex;
+  }
+}

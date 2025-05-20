@@ -1,0 +1,239 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "poppins";
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f8f8f8;
+}
+
+main {
+  width: 80%;
+  margin: 20px auto;
+}
+
+.cart-container {
+  width: 100%;
+  margin: 20px 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #ddd;
+}
+
+.cart-header div {
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 2px solid #ddd;
+}
+
+.button-co {
+  cursor: pointer;
+}
+
+.cart-item img {
+  width: 120px;
+  height: auto;
+  margin-right: 15px;
+}
+
+.cart-item .product-details {
+  flex: 1;
+  max-width: 250px;
+}
+
+.cart-item .product-price {
+  margin-left: 70px;
+  text-align: center;
+}
+.cart-item .product-quantity {
+  flex: 1;
+  margin-left: 250px;
+  text-align: center;
+}
+
+.cart-item .product-subtotal {
+  margin-left: 200px;
+  text-align: center;
+}
+
+.product-subtotal {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.update-cart {
+  text-align: right;
+  margin-top: 15px;
+}
+
+.update-cart button {
+  border: 1px solid #ccc;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.update-cart button:hover {
+  background-color: #eaeaea;
+}
+
+.container {
+  width: 100%;
+  height: auto;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 20px;
+  margin: auto;
+}
+
+.header {
+  color: #ff6f6f;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.label {
+  font-size: 18px;
+  color: #333;
+  font-weight: bold;
+}
+
+.value {
+  font-size: 14px;
+  color: #333;
+  margin-left: 200px;
+}
+
+.section-header {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ff6f6f;
+  margin-bottom: 10px;
+}
+
+.instructions,
+.instructions p {
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.alamat {
+  cursor: pointer;
+  width: 400px;
+}
+
+.alamat summary:hover {
+  color: red;
+}
+
+.form-input {
+  width: 200%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  outline: none;
+}
+
+.update-button {
+  background-color: #333;
+  color: #fff;
+  padding: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.update-button:hover {
+  background-color: #555;
+}
+
+.total {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  text-align: left;
+  margin-top: 20px;
+  border-top: 2px solid #ddd;
+  padding-top: 10px;
+}
+
+.spasi {
+  margin-left: 200px;
+}
+
+.lanjut-button {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  text-transform: uppercase;
+  margin-top: 10px;
+}
+
+.lanjut-button:hover {
+  background-color: #555;
+}
+
+.product-quantity {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.product-quantity button {
+  width: 25px;
+  height: 25px;
+  background-color: #eee;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.product-quantity span {
+  display: inline-block;
+  width: 20px;
+  text-align: center;
+}
+
+.co {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+}

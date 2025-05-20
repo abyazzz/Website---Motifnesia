@@ -1,0 +1,252 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "poppins";
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  background-color: #f9f9f9;
+}
+
+.home {
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+  color: #555;
+}
+
+.home a {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+}
+
+.home a:hover {
+  text-decoration: underline;
+}
+
+.container {
+  width: 1400px;
+  margin: 18px auto;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.atas {
+  display: flex;
+}
+
+.bawah {
+  margin-top: 50px;
+  width: 100%;
+}
+
+.images {
+  flex: 1;
+  padding-right: 20px;
+}
+
+.images .main-image {
+  width: 100%;
+  border-radius: 5px;
+}
+
+.fotoImages {
+  display: flex;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.fotoImages img {
+  width: 20%;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.fotoImages img:hover {
+  border-color: #007bff;
+}
+
+.deskripsi {
+  flex: 1.5;
+}
+
+.deskripsi h1 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.harga {
+  font-size: 1.2rem;
+  color: #e60023;
+  margin-bottom: 20px;
+}
+
+.info {
+  list-style: none;
+  margin-bottom: 20px;
+}
+
+.info li {
+  margin-bottom: 10px;
+}
+
+.options {
+  margin-bottom: 20px;
+}
+
+.color-options,
+.size-options {
+  margin-bottom: 10px;
+}
+
+.color,
+.size {
+  border: 1px solid #ddd;
+  background-color: #fff;
+  padding: 5px 10px;
+  margin-right: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.color:hover,
+.size:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.add-to-cart {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.add-to-cart input {
+  width: 50px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.add-to-cart a {
+  background-color: #000;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.add-to-cart a:hover {
+  background-color: #333;
+}
+
+.cart-button {
+  background-color: #000;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.cart-button:hover {
+  background-color: #333;
+}
+
+.additional-info {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.additional-info strong {
+  color: #000;
+}
+
+.barang-barang {
+  flex: 9;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding-bottom: 100px;
+}
+
+.barang {
+  width: 100%;
+  max-width: 180px;
+  height: 250px;
+  background-color: white;
+  border-radius: 4px;
+  overflow: hidden;
+  text-decoration: none;
+  color: black;
+  outline: 0;
+  box-shadow: 0 0 15px 1px gray;
+  transition: 200ms;
+}
+.barang div {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0 10px;
+}
+
+.barang div section p {
+  margin-left: 22px;
+}
+
+.barang div section {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.barang p {
+  font-size: 14px;
+  position: absolute;
+}
+
+.barang h2 {
+  margin-top: 20px;
+  font-size: 18px;
+}
+
+.fa-star {
+  color: rgb(216, 210, 47);
+}
+
+.fa-heart {
+  padding: 2px;
+  border-radius: 30px;
+  color: #fb4141;
+}
+
+.fa-heart:hover {
+  background-color: #fb4141;
+  color: white;
+}
+
+.barang:hover {
+  color: black;
+  transform: scale(1.01);
+}
+
+.barang .foto {
+  width: 100%;
+  height: 180px;
+}

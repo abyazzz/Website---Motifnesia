@@ -1,0 +1,175 @@
+footer {
+  width: 100%;
+  background-color: #6a4a3c;
+  color: #f7efef;
+  padding: 10px 30px;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+footer section a {
+  text-decoration: none;
+  color: white;
+  margin-bottom: 5px;
+  position: relative;
+}
+
+footer section a:hover {
+  color: burlywood;
+}
+
+footer section a::after {
+  content: "";
+  position: absolute;
+  background-color: burlywood;
+  height: 2px;
+  width: 0%;
+  left: 0;
+  bottom: -5px;
+  transition: 300ms;
+}
+
+footer section a:hover::after {
+  width: 100%;
+}
+
+.satu a {
+  display: inline-block;
+  font-size: 20px;
+  margin-right: 15px;
+  transition: all 400ms ease;
+}
+
+.satu a:hover {
+  transform: translateY(-5px);
+}
+
+.dua,
+.tiga,
+.empat {
+  display: flex;
+  flex-direction: column;
+}
+
+footer h3 {
+  color: burlywood;
+  font-size: 18px;
+}
+
+.satu h1 {
+  color: burlywood;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.dua h3 {
+  margin-bottom: 20px;
+}
+
+.tiga h3 {
+  margin-bottom: 20px;
+}
+
+.empat h3 {
+  margin-bottom: 20px;
+}
+
+.empat img {
+  width: 180px;
+  height: 50px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+@media (min-width: 768px) {
+  .cont,
+  footer {
+    width: 100%;
+    background-color: #6a4a3c;
+    color: #f7efef;
+    padding: 10px 30px;
+    display: flex;
+    justify-content: space-around;
+    align-items: baseline;
+    position: absolute;
+  }
+}
+/* Tambahkan media queries untuk responsif */
+@media (max-width: 768px) {
+  .cont,
+  footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .huu .carousel-inner {
+    height: 300px;
+  }
+
+  .containerr {
+    width: 90%;
+  }
+
+  main {
+    flex-direction: column;
+  }
+
+  .kategori-harga {
+    flex: 1;
+  }
+
+  .barang-barang {
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .barang {
+    max-width: calc(50% - 1rem);
+    margin: 0 auto;
+  }
+
+  footer {
+    justify-content: space-between;
+    padding: 10px 20px;
+  }
+  footer section {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .satu h1 {
+    font-size: 20px;
+  }
+
+  footer section a {
+    font-size: 14px;
+  }
+
+  footer h3 {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  footer {
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  footer section {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  footer h3 {
+    font-size: 14px;
+  }
+
+  footer section a {
+    font-size: 12px;
+  }
+
+  footer p {
+    font-size: 12px;
+  }
+}
