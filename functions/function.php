@@ -1,6 +1,6 @@
 <?php
 
-    require 'koneksi.php';
+    require 'koneksi.php';sasa
 
     function query($query) { //menampilkan data
         global $conn;
