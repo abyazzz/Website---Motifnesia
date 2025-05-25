@@ -16,8 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tambah_keranjang'])) 
         exit;
     }
     tambahKeKeranjang($id);
-    header("Location: keranjang.php"); // Redirect ke keranjang
-    exit;
+    echo "<script>
+            alert('berhasil menambah produk ke keranjang');
+        </script>";
 }
 
 // PROSES TAMBAH/HApus FAVORIT
@@ -32,8 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tambah_favorit'])) {
   } else {
       tambahFavorit($id);
   }
-  header("Location: favorit.php");
-  exit;
+  echo "<script>
+            alert('berhasil menambah produk ke Fvorite');
+        </script>";
 }
 
 ?>

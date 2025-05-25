@@ -132,7 +132,9 @@ if (isset($_POST['submit'])) {
         </div>
 
         <button type="submit" name="submit" class="btn btn-primary">Simpan Perubahan</button>
+        <button><a href="profileUser.php">Close</a></button>
     </form>
+    
   </div>
 
   <?php require '../asstes/header-footer/footer.php'; ?>
