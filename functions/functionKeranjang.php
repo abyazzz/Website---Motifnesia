@@ -47,15 +47,24 @@
     }
 
     // Update jumlah qty produk
-    function updateQty($product_id, $qty) {
-        global $conn;
-        $user_id = $_SESSION['user_id'];
+    function updateQty($product_id, $ukuran, $delta) {
+    global $conn;
+    $user_id = $_SESSION['user_id'];
 
-        if ($qty <= 0) {
-            hapusDariKeranjang($product_id);
-        } else {
-            $conn->query("UPDATE keranjang 
-                            SET qty = $qty, updated_at = NOW() 
-                            WHERE user_id = $user_id AND product_id = $product_id");
+    $res = $conn->query("SELECT qty FROM keranjang 
+                         WHERE user_id = $user_id AND product_id = $product_id AND ukuran = '$ukuran'");
+    $row = $res->fetch_assoc();
+    $qty_sekarang = $row['qty'];
+
+    $qty_baru = $qty_sekarang + $delta;
+
+    if ($qty_baru <= 0) {
+        $conn->query("DELETE FROM keranjang 
+                      WHERE user_id = $user_id AND product_id = $product_id AND ukuran = '$ukuran'");
+    } else {
+        $conn->query("UPDATE keranjang 
+                      SET qty = $qty_baru, updated_at = NOW() 
+                      WHERE user_id = $user_id AND product_id = $product_id AND ukuran = '$ukuran'");
     }
 }
+ 

@@ -1,25 +1,14 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-require '../functions/functionKeranjang.php'; // Ganti dengan path fungsi yang sesuai
+session_start();
+require '../functions/functionKeranjang.php';
 
-// Ambil ID user dari session (pastikan user sudah login)
 $user_id = $_SESSION['user_id'] ?? null;
 if (!$user_id) {
-    header("Location: ../pages/halamanlogin2.php");
+    header("Location: halamanlogin2.php");
     exit;
 }
 
-// Ambil data produk di keranjang berdasarkan user
-$keranjang = getIsiKeranjang($user_id);
-
-// Fungsi untuk hitung subtotal dan total
-$total_harga = 0;
-foreach ($keranjang as $item) {
-    $subtotal = $item['harga'] * $item['qty'];
-    $total_harga += $subtotal;
-}
+$keranjang = getIsiKeranjang();
 ?>
 
 <!DOCTYPE html>
@@ -51,50 +40,44 @@ foreach ($keranjang as $item) {
   <?php require '../asstes/header-footer/header.php'; ?>
 
 <main>
+  <form method="POST" action="proses_checkout.php">
     <div class="cart-container">
       <div class="cart-header">
-        <div>PRODUK</div>
+        <div><input type="checkbox" id="checkAll" /> PRODUK</div>
         <div>HARGA</div>
         <div>JUMLAH</div>
         <div>SUBTOTAL</div>
       </div>
 
       <?php foreach ($keranjang as $item): ?>
-        <div class="cart-item">
-          <img src="../asstes/img/<?php echo $item['gambar']; ?>" alt="Product Image" />
-          <div class="product-details"><?php echo $item['nama_produk']; ?></div>
-          <div class="product-size">Ukuran: <?php echo $item['ukuran']; ?></div>
-          <div class="product-price">Rp<?php echo number_format($item['harga'], 0, ',', '.'); ?></div>
-          <div class="product-quantity">
-              <button class="btn-minus" data-id="<?= $item['product_id'] ?>">-</button>
-              <span class="quantity"><?= $item['qty'] ?></span>
-              <button class="btn-plus" data-id="<?= $item['product_id'] ?>">+</button>
-          </div>
-          <div class="product-subtotal">Rp<?php echo number_format($item['harga'] * $item['qty'], 0, ',', '.'); ?></div>
+      <div class="cart-item">
+        <input type="checkbox" class="check-product" name="checkout_items[]" value="<?= $item['product_id'] ?>|<?= $item['ukuran'] ?>" />
+        <img src="../asstes/img/<?= $item['gambar'] ?>" alt="Product Image" />
+        <div class="product-details"><?= $item['nama_produk'] ?></div>
+        <div class="product-size">Ukuran: <?= $item['ukuran'] ?></div>
+        <div class="product-price">Rp<?= number_format($item['harga'], 0, ',', '.') ?></div>
+        <div class="product-quantity">
+          <button class="btn-minus" data-id="<?= $item['product_id'] ?>" data-ukuran="<?= $item['ukuran'] ?>">-</button>
+          <span class="quantity"><?= $item['qty'] ?></span>
+          <button class="btn-plus" data-id="<?= $item['product_id'] ?>" data-ukuran="<?= $item['ukuran'] ?>">+</button>
         </div>
-      <?php endforeach; ?>
-
-      <div class="update-cart">
-        <!-- Arahkan button ke index.php untuk update keranjang -->
-        <a href="../index.php">
-          <button>PERBARUI KERANJANG</button>
-        </a>
+        <div class="product-subtotal subtotal-item" data-harga="<?= $item['harga'] * $item['qty'] ?>">Rp<?= number_format($item['harga'] * $item['qty'], 0, ',', '.') ?></div>
       </div>
+      <?php endforeach; ?>
     </div>
 
     <div class="container">
-        <div class="header">TOTAL KERANJANG BELANJA</div>
-
-        <div class="row">
-          <div class="label">Subtotal</div>
-          <div class="value">Rp<?php echo number_format($total_harga, 0, ',', '.'); ?></div>
-        </div>
-
-        <div class="total">
-          <p>Total<span class="spasi">Rp<?php echo number_format($total_harga, 0, ',', '.'); ?></span></p>
-          <a href="Zco.html"><button type="button" class="lanjut-button">Checkout</button></a>
-        </div>
+      <div class="header">TOTAL KERANJANG BELANJA</div>
+      <div class="row">
+        <div class="label">Subtotal</div>
+        <div class="value total-belanja">Rp0</div>
+      </div>
+      <div class="total">
+        <p>Total<span class="spasi total-belanja">Rp0</span></p>
+        <button type="submit" class="lanjut-button">Checkout</button>
+      </div>
     </div>
+  </form>
 </main>
 
 
@@ -102,35 +85,42 @@ foreach ($keranjang as $item) {
 
 <script>
 $(document).ready(function() {
-    // Tombol Plus
-    $('.btn-plus').click(function() {
-        const productId = $(this).data('id');
-        updateQuantity(productId, 'increase');
-    });
+  $(document).on('click', '.btn-plus', function() {
+    const id = $(this).data('id');
+    const ukuran = $(this).data('ukuran');
+    updateQuantity(id, ukuran, 'increase');
+  });
 
-    // Tombol Minus
-    $('.btn-minus').click(function() {
-        const productId = $(this).data('id');
-        updateQuantity(productId, 'decrease');
-    });
+  $(document).on('click', '.btn-minus', function() {
+    const id = $(this).data('id');
+    const ukuran = $(this).data('ukuran');
+    updateQuantity(id, ukuran, 'decrease');
+  });
 
-    function updateQuantity(productId, action) {
-        $.ajax({
-            url: '../functions/update_quantity.php',
-            type: 'POST',
-            data: {
-                product_id: productId,
-                action: action
-            },
-            success: function(response) {
-                // Refresh halaman setelah update
-                location.reload();
-            },
-            error: function(xhr, status, error) {
-                alert('Error: ' + error);
-            }
-        });
-    }
+  function updateQuantity(productId, ukuran, action) {
+    $.post('../functions/update_quantity.php', {
+      product_id: productId,
+      ukuran: ukuran,
+      action: action
+    }, function() {
+      location.reload();
+    });
+  }
+
+  function hitungTotal() {
+    let total = 0;
+    $('.check-product:checked').each(function() {
+      const subtotal = $(this).closest('.cart-item').find('.subtotal-item').data('harga');
+      total += subtotal;
+    });
+    $('.total-belanja').text('Rp' + total.toLocaleString('id-ID'));
+  }
+
+  $(document).on('change', '.check-product', hitungTotal);
+  $('#checkAll').on('change', function() {
+    $('.check-product').prop('checked', this.checked);
+    hitungTotal();
+  });
 });
 </script>
 
