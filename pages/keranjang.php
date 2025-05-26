@@ -63,6 +63,7 @@ foreach ($keranjang as $item) {
         <div class="cart-item">
           <img src="../asstes/img/<?php echo $item['gambar']; ?>" alt="Product Image" />
           <div class="product-details"><?php echo $item['nama_produk']; ?></div>
+          <div class="product-size">Ukuran: <?php echo $item['ukuran']; ?></div>
           <div class="product-price">Rp<?php echo number_format($item['harga'], 0, ',', '.'); ?></div>
           <div class="product-quantity">
               <button class="btn-minus" data-id="<?= $item['product_id'] ?>">-</button>

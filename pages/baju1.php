@@ -15,7 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tambah_keranjang'])) 
         header("Location: halamanlogin2.php");
         exit;
     }
-    tambahKeKeranjang($id);
+    $ukuran = $_POST['ukuran'] ?? '';
+    tambahKeKeranjang($id, $ukuran);
     echo "<script>
             alert('berhasil menambah produk ke keranjang');
         </script>";
@@ -97,17 +98,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tambah_favorit'])) {
           </p>
           <p><strong>Tags:</strong><?= $dataProduk["tags"]; ?></p>
           <div class="options">
-            <div class="size-options">
-              <p><strong>Ukuran:</strong></p>
-              <button class="size">SS</button>
-              <button class="size">S</button>
-              <button class="size">M</button>
-              <button class="size">L</button>
-              <button class="size">XL</button>
-            </div>
-          </div>
-          <div class="add-to-cart">
             <form method="post" style="display: inline;">
+                <div class="size-options">
+                    <p><strong>Ukuran:</strong></p>
+                    <label><input type="radio" name="ukuran" value="SS"> SS</label>
+                    <label><input type="radio" name="ukuran" value="S"> S</label>
+                    <label><input type="radio" name="ukuran" value="M"> M</label>
+                    <label><input type="radio" name="ukuran" value="L"> L</label>
+                    <label><input type="radio" name="ukuran" value="XL"> XL</label>
+                  </div>
+                </div>
+                <div class="add-to-cart">
+            
                 <input type="hidden" name="tambah_keranjang" value="1">
                 <button type="submit" class="btn-tambah-keranjang">Tambah ke Keranjang</button>
             </form>
@@ -147,11 +149,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tambah_favorit'])) {
           
     <?php require '../asstes/header-footer/footer.php'; ?>
 
-    <script>const burger = document.querySelector('.burger');
+    <script>
+      const burger = document.querySelector('.burger');
       const nav = document.querySelector('.huhu ul');
       
       burger.addEventListener('click', () => {
           nav.classList.toggle('nav-active');
-      });</script>
+      });
+      
+      document.querySelector('.btn-tambah-keranjang').addEventListener('click', function(e) {
+          const ukuranDipilih = document.querySelector('input[name="ukuran"]:checked');
+          if (!ukuranDipilih) {
+              alert('Silakan pilih ukuran terlebih dahulu!');
+              e.preventDefault();
+          }
+      });
+      
+    </script>
   </body>
 </html>
