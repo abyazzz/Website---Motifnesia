@@ -1,105 +1,143 @@
+<?php
+session_start();
+require '../functions/koneksi.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: halamanlogin2.php");
+    exit;
+}
+
+$user_id = $_SESSION['user_id'];
+
+if (!isset($_POST['checkout_items']) || empty($_POST['checkout_items'])) {
+    echo "<p>Tidak ada produk yang dipilih untuk checkout.</p>";
+    exit;
+}
+
+$checkout_items = $_POST['checkout_items'];
+$produk_data = [];
+$total_harga = 0;
+
+foreach ($checkout_items as $item) {
+    list($product_id, $ukuran) = explode('|', $item);
+    
+    $stmt = $conn->prepare("SELECT k.qty, p.nama_produk, p.harga, p.gambar FROM keranjang k JOIN produk p ON k.product_id = p.id WHERE k.user_id = ? AND k.product_id = ? AND k.ukuran = ?");
+    $stmt->bind_param("iis", $user_id, $product_id, $ukuran);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($row = $result->fetch_assoc()) {
+        $subtotal = $row['harga'] * $row['qty'];
+        $produk_data[] = [
+            'id' => $product_id,
+            'nama' => $row['nama_produk'],
+            'gambar' => $row['gambar'],
+            'ukuran' => $ukuran,
+            'qty' => $row['qty'],
+            'harga' => $row['harga'],
+            'subtotal' => $subtotal
+        ];
+        $total_harga += $subtotal;
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cart</title>
-    <link rel="stylesheet" href="Zcart.css" />
-    <link rel="stylesheet" href="footer.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="preconnect" href="https://fonts.googleapis.com"> 
-    <link rel="stylesheet" href="../asstes/css/checkOut.css">
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-      crossorigin="anonymous"
-    />
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
-  </head>
-  <body>
-  
-  <?php require '../asstes/header-footer/header.php'; ?>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pembayaran</title>
+  <link rel="stylesheet" href="../asstes/css/checkOut.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<?php require '../asstes/header-footer/header.php'; ?>
 
 <main>
-    <div class="cart-container">
-      <div class="cart-header">
-        <div>PRODUK</div>
-        <div>HARGA</div>
-        <div>JUMLAH</div>
-        <div>SUBTOTAL</div>
+  <form action="../functions/functionCheckOut.php" method="POST">
+    <div class="checkout-container">
+      <div class="section alamat">
+        <label>Alamat:</label>
+        <input type="text" name="alamat" required />
       </div>
-      <div class="cart-item">
-        <input class="button-co" type="checkbox">
-        <img src="FotoBatik/batik (1).jpg" alt="Dress Batik" />
-        <div class="product-details">Batik Arya Timur - BIRU, SS</div>
-        <div class="product-price">Rp300.000</div>
-        <div class="product-quantity">
-          <button>-</button>
-          <span>1</span>
-          <button>+</button>
+
+      <div class="section produk">
+        <?php foreach ($produk_data as $produk): ?>
+          <div class="produk-item">
+            <img src="../asstes/img/<?= $produk['gambar'] ?>" alt="produk">
+            <div class="produk-detail">
+              <p class="nama"><?= $produk['nama'] ?></p>
+              <p class="ukuran">Ukuran: <?= $produk['ukuran'] ?></p>
+              <p class="qty">Jumlah: <?= $produk['qty'] ?></p>
+              <p class="harga">Rp<?= number_format($produk['harga'], 0, ',', '.') ?></p>
+            </div>
+          </div>
+          <input type="hidden" name="produk_id[]" value="<?= $produk['id'] ?>">
+          <input type="hidden" name="ukuran[]" value="<?= $produk['ukuran'] ?>">
+          <input type="hidden" name="qty[]" value="<?= $produk['qty'] ?>">
+          <input type="hidden" name="harga[]" value="<?= $produk['harga'] ?>">
+        <?php endforeach; ?>
+      </div>
+
+      <div class="section pengiriman">
+        <h4>Metode Pengiriman</h4>
+        <label><input type="radio" name="pengiriman" value="reguler" data-ongkir="15000" required> Reguler (2-5 hari) - Rp15.000</label>
+        <label><input type="radio" name="pengiriman" value="ekspres" data-ongkir="20000"> Ekspres (1-2 hari) - Rp20.000</label>
+        <label><input type="radio" name="pengiriman" value="ekonomis" data-ongkir="10000"> Ekonomis (4-7 hari) - Rp10.000</label>
+      </div>
+
+      <div class="section pembayaran">
+        <h4>Metode Pembayaran</h4>
+        <label><input type="radio" name="pembayaran" value="mandiri" required> Mandiri Virtual Account</label>
+        <label><input type="radio" name="pembayaran" value="bca"> BCA Virtual Account</label>
+        <label><input type="radio" name="pembayaran" value="gopay"> GoPay</label>
+        <label><input type="radio" name="pembayaran" value="cod"> Bayar di Tempat (COD)</label>
+      </div>
+
+      <div class="section rincian">
+        <h4>Rincian Belanja</h4>
+        <?php foreach ($produk_data as $produk): ?>
+          <div class="row">
+            <span><?= $produk['nama'] ?> (x<?= $produk['qty'] ?>)</span>
+            <span>Rp<?= number_format($produk['subtotal'], 0, ',', '.') ?></span>
+          </div>
+        <?php endforeach; ?>
+        <div class="row">
+          <span>Total Harga:</span>
+          <span id="total-harga">Rp<?= number_format($total_harga, 0, ',', '.') ?></span>
         </div>
-        <div class="product-subtotal">Rp300.000</div>
-      </div>
-      <div class="update-cart">
-        <button>PERBARUI KERANJANG</button>
+        <div class="row">
+          <span>Ongkos Kirim:</span>
+          <span id="total-ongkir">Rp0</span>
+        </div>
+        <div class="row total">
+          <strong>Total Bayar:</strong>
+          <strong id="total-bayar">Rp<?= number_format($total_harga, 0, ',', '.') ?></strong>
+        </div>
+        <input type="hidden" name="total_harga" value="<?= $total_harga ?>">
+        <input type="hidden" name="ongkir" id="input-ongkir" value="0">
+        <input type="hidden" name="total_bayar" id="input-total-bayar" value="<?= $total_harga ?>">
+        <button type="submit" class="btn-bayar">Bayar</button>
       </div>
     </div>
-      <div class="container">
-        <div class="header">TOTAL KERANJANG BELANJA</div>
-
-        <div class="row">
-          <div class="label">Subtotal</div>
-          <div class="value">Rp300.000</div>
-        </div>
-
-        <div class="section-header">PENGIRIMAN</div>
-        <div class="instructions">
-          <p>Masukan alamat Anda untuk melihat opsi pengiriman.</p>
-          <details class="alamat">
-            <summary>Hitung Biaya pengiriman</summary>
-
-            <input
-              type="text"
-              id="provinsi"
-              name="provinsi"
-              class="form-input"
-              placeholder="Provinsi"
-              required
-            />
-
-            <input
-              type="text"
-              id="kota"
-              name="kota" 
-              class="form-input"
-              placeholder="Kota" 
-              required
-            />
-
-            <input
-              type="number"
-              id="kodepos"
-              name="kodepos"
-              class="form-input"
-              placeholder="Kode pos"
-              required
-            />
-
-            <button type="button" class="update-button">PERBARUI TOTAL</button>
-          </details>
-        </div>
-        <div class="total">
-          <p>Total<span class="spasi">Rp315.000</span></p>
-          <a href="Zco.html"><button type="button" class="lanjut-button">Checkout</button></a>
-        </div>
-        </div>
-      </div>
+  </form>
 </main>
-      <?php require '../asstes/header-footer/footer.php'; ?>
-  </body>
+
+<script>
+  $(document).ready(function() {
+    $('input[name="pengiriman"]').change(function() {
+      const ongkir = parseInt($(this).data('ongkir'));
+      const totalHarga = <?= $total_harga ?>;
+      const totalBayar = ongkir + totalHarga;
+
+      $('#total-ongkir').text('Rp' + ongkir.toLocaleString('id-ID'));
+      $('#total-bayar').text('Rp' + totalBayar.toLocaleString('id-ID'));
+
+      $('#input-ongkir').val(ongkir);
+      $('#input-total-bayar').val(totalBayar);
+    });
+  });
+</script>
+
+<?php require '../asstes/header-footer/footer.php'; ?>
+</body>
 </html>
