@@ -21,7 +21,7 @@ if (isset($_POST["submit"])) {
 <head>
     <meta charset="UTF-8"> 
     <title>Edit Produk</title>
-    <link rel="stylesheet" href="../asstes/edit.css" />
+    <link rel="stylesheet" href="css/edit.css" />
 </head>
 <body>
     <main>

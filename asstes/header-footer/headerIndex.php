@@ -22,8 +22,9 @@
                 <li><a href="dasbord.html">About Us</a></li>
                 <li><a href="ZZcontact2.html">Contact</a></li>
                 <li><a href="ZZlayanankami.html">Service</a></li>
-                <li><a href="../Website---Motifnesia/pages/keranjang.php"><i class="fa-solid fa-cart-shopping"></i></a></li>
-                <li><a href="../Website---Motifnesia/pages/favorit.php"><i class="fa-regular fa-heart"></i></a></li>
+                <li><a href="pages/notifikasi.php">Notif</a></li>
+                <li><a href="pages/keranjang.php"><i class="fa-solid fa-cart-shopping"></i></a></li>
+                <li><a href="pages/favorit.php"><i class="fa-regular fa-heart"></i></a></li>
                 <li>
                     <?php if (isset($_SESSION['username'])): ?>
                         <a href="./pages/profileUser.php">

@@ -79,7 +79,7 @@
             <a class="Pelanggan" href="koleksi.php"><p>Koleksi</p></a>
           </li>
           <li>
-            <a class="Pelanggan" href="pelanggan.php"
+            <a class="Pelanggan" href="penjualan.php"
               ><p>Penjualan & Stok</p></a
             >
           </li>

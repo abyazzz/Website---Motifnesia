@@ -22,6 +22,7 @@
                 <li><a href="dasbord.html">About Us</a></li>
                 <li><a href="ZZcontact2.html">Contact</a></li>
                 <li><a href="ZZlayanankami.html">Service</a></li>
+                <li><a href="notifikasi.php">Notif</a></li>
                 <li><a href="keranjang.php"><i class="fa-solid fa-cart-shopping"></i></a></li>
                 <li><a href="favorit.php"><i class="fa-regular fa-heart"></i></a></li>
                 <li>

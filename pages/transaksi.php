@@ -12,7 +12,7 @@ if (!isset($_SESSION['checkout_id']) || !isset($_SESSION['waktu_transaksi'])) {
 $waktuTransaksi = strtotime($_SESSION['waktu_transaksi']);
 $tanggal = date("d M Y, H:i", $waktuTransaksi);
 $deadline = $waktuTransaksi + (24 * 60 * 60); // +24 jam
-$nomorPembayaran = $_SESSION['nomor_pembayaran'];
+$nomorPembayaran = trim((string)$_SESSION['nomor_pembayaran']);
 $totalTagihan = $_SESSION['total_tagihan'];
 $metode = $_SESSION['metode_pembayaran'];
 
@@ -73,8 +73,8 @@ $labelMetode = match($metode) {
 
     <div class="input-area">
       <p>Masukan nomor metode pembayaran untuk melakukan pembayaran</p>
-      <input type="text" id="inputNomor" placeholder="Masukkan nomor">
-      <button id="btnBayar">Bayar</button>
+      <input type="text" name="nomor_input" id="inputNomor" placeholder="Masukkan nomor">
+      <button id="btnBayar">Bayar</button> 
     </div>
   </div>
 </main>
@@ -82,7 +82,7 @@ $labelMetode = match($metode) {
 <div class="modal-bg" id="modalSuccess">
   <div class="modal">
     <h2>Pembayaran Berhasil!</h2>
-    <p>Pesanan sedang dikonfirmasi admin.</p>
+    <p>Pembayaran sedang dikonfirmasi admin.</p>
     <button onclick="window.location.href='../index.php'">Tutup</button>
   </div>
 </div>
@@ -93,7 +93,7 @@ $labelMetode = match($metode) {
 // Countdown
 const deadline = <?= $deadline ?> * 1000;
 function updateCountdown() {
-  const now = new Date().getTime();
+  const now = new Date().getTime(); 
   const diff = deadline - now;
   if (diff <= 0) {
     document.getElementById("countdown").textContent = "00 : 00 : 00";
@@ -110,9 +110,12 @@ updateCountdown();
 // Validasi nomor pembayaran
 document.getElementById("btnBayar").addEventListener("click", function () {
   const input = document.getElementById("inputNomor").value.trim();
-  const benar = "<?= $nomorPembayaran ?>";
+  const benar = "<?= $nomorPembayaran ?>".trim();
   if (input === benar) {
     document.getElementById("modalSuccess").style.display = "flex";
+
+    // Tambahkan AJAX call kalau mau simpan notifikasi ke DB
+    // contoh: fetch('notifikasi_konfirmasi.php?checkout_id=<?= $_SESSION['checkout_id'] ?>')
   } else {
     alert("Nomor pembayaran tidak valid.");
   }

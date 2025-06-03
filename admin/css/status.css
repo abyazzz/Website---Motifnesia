@@ -1,0 +1,165 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f7f5f2;
+}
+
+.container {
+  display: flex;
+  width: 90%;
+  padding: 15px;
+  gap: 1rem;
+  margin: auto;
+}
+
+aside {
+  flex: 2;
+  width: 100%;
+  box-shadow: 0 0 10px 1px gray;
+  border-radius: 18px;
+  overflow: hidden;
+  background-color: #6a4a3c;
+}
+.profil {
+  width: 100%;
+  height: 180px;
+  background-color: #6a4a3c;
+  border-bottom: 3px solid burlywood;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.profil p {
+  font-size: 18px;
+}
+
+.nav {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nav li {
+  width: 90%;
+  height: 35px;
+  background-color: burlywood;
+  margin: 5px 0;
+  border: 1px solid gray;
+  border-radius: 10px;
+  list-style: none;
+  padding-left: 20px;
+  transition: 300ms;
+}
+
+.nav li p {
+  border: 0;
+}
+
+.nav li:hover {
+  transform: scale(1.01);
+}
+
+.nav li a {
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  color: black;
+  margin-top: 7px;
+}
+
+main {
+  flex: 8;
+  padding: 15px;
+  box-shadow: 0 0 10px 1px gray;
+  border-radius: 18px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #6a4a3c;
+}
+
+/* ========== LAYOUT BARIS STATUS ========== */
+.akun-pelanggan,
+.akun-pelanggan.header {
+  display: grid;
+  grid-template-columns: 12% 18% 10% 8% 22% 18% 12%;
+  align-items: center;
+  gap: 10px;
+  margin: 10px auto;
+  padding: 10px;
+  width: 98%;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.akun-pelanggan.header {
+  font-weight: bold;
+  background: #eaeaea;
+  box-shadow: none;
+  border: 1px solid #ccc;
+}
+
+/* ========== TIAP KOLOM ========== */
+.akun-pelanggan section {
+  font-size: 14px;
+  word-wrap: break-word;
+  color: #333;
+}
+
+/* ========== DROPDOWN STATUS ========== */
+.akun-pelanggan select {
+  width: 100%;
+  padding: 5px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* ========== BUTTON ========== */
+.akun-pelanggan button {
+  padding: 6px 12px;
+  font-size: 13px;
+  background-color: burlywood;
+  color: #000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.akun-pelanggan button:hover {
+  background-color: #d2aa6d;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1024px) {
+  .akun-pelanggan,
+  .akun-pelanggan.header {
+    grid-template-columns: 1fr;
+  }
+
+  .akun-pelanggan section,
+  .akun-pelanggan select,
+  .akun-pelanggan button {
+    width: 100%;
+    text-align: left;
+  }
+
+  .akun-pelanggan button {
+    margin-top: 8px;
+  }
+}
