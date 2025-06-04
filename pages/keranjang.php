@@ -19,9 +19,8 @@ $keranjang = getIsiKeranjang();
     <title>Keranjang Belanja</title>
     <link rel="stylesheet" href="../asstes/css/keranjang.css" />
     <link rel="stylesheet" href="../asstes/css/footer.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" crossorigin="anonymous" />
-    <link rel="preconnect" href="https://fonts.googleapis.com"> 
     <link rel="stylesheet" href="../asstes/css/header.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -109,6 +108,15 @@ $(document).ready(function() {
   $('#checkAll').on('change', function() {
     $('.check-product').prop('checked', this.checked);
     hitungTotal();
+  });
+
+  // ✅ VALIDASI sebelum submit ke checkOut.php
+  $("form").on("submit", function(e) {
+    const checked = $(".check-product:checked");
+    if (checked.length === 0) {
+      e.preventDefault();
+      alert("Pilih minimal satu produk untuk checkout.");
+    }
   });
 });
 </script>

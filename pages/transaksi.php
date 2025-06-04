@@ -1,37 +1,22 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-session_start();
+require '../functions/koneksi.php';
 require '../asstes/header-footer/header.php';
 
-if (!isset($_SESSION['checkout_id']) || !isset($_SESSION['waktu_transaksi'])) {
-    header("Location: checkOut.php");
-    exit;
-}
+// Ambil semua transaksi grouped by checkout_id
+$query = $conn->query("SELECT c.id AS checkout_id, c.user_id, u.nama_lengkap, u.email, c.alamat, c.total_bayar, c.status_id, c.pengiriman, c.pembayaran
+  FROM checkout c
+  JOIN users u ON c.user_id = u.id
+  ORDER BY c.created_at DESC");
 
-$waktuTransaksi = strtotime($_SESSION['waktu_transaksi']);
-$tanggal = date("d M Y, H:i", $waktuTransaksi);
-$deadline = $waktuTransaksi + (24 * 60 * 60); // +24 jam
-$nomorPembayaran = trim((string)$_SESSION['nomor_pembayaran']);
-$totalTagihan = $_SESSION['total_tagihan'];
-$metode = $_SESSION['metode_pembayaran'];
-
-$labelMetode = match($metode) {
-    'mandiri' => 'Mandiri Virtual Account',
-    'bca' => 'BCA Virtual Account',
-    'gopay' => 'GoPay',
-    'cod' => 'Bayar di Tempat (COD)',
-    default => 'Metode Tidak Dikenal',
-};
+$statusList = $conn->query("SELECT * FROM status_transaksi")->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Halaman Pembayaran</title>
-  <link rel="stylesheet" href="../asstes/css/transaksi.css"/>
+  <meta charset="UTF-8">
+  <title>Status Pesanan</title>
+  <link rel="stylesheet" href="css/status.css">
   <style>
     .modal-bg {
       display: none;
@@ -46,79 +31,97 @@ $labelMetode = match($metode) {
       background: white;
       padding: 20px;
       border-radius: 8px;
-      width: 300px;
-      text-align: center;
+      width: 400px;
+      text-align: left;
     }
     .modal h2 {
-      color: green;
+      margin-bottom: 10px;
+    }
+    .modal .close-btn {
+      background: crimson;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      margin-top: 15px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-
-<main>
-  <div class="card">
-    <div class="deadline">
-      <div>
-        <p>Bayar sebelum</p>
-        <span class="tanggal"><?= $tanggal ?></span>
-      </div>
-      <div class="timer" id="countdown"></div>
+<div class="container">
+  <aside>
+    <section class="profil">
+      <i><svg xmlns="http://www.w3.org/2000/svg" height="110px" viewBox="0 -960 960 960" width="110px" fill="#e8eaed"><path d="..."/></svg></i>
+      <p>Admin</p>
+    </section>
+    <div class="nav">
+      <li><a class="Status" href="Koleksi.php"><p>Koleksi</p></a></li>
+      <li><a class="Status" href="penjualan.php"><p>Penjualan & Stok</p></a></li>
+      <li><a class="Status" href="pelanggan.php"><p>Pelanggan</p></a></li>
+      <li><a class="status" href="#"><p>Status</p></a></li>
+      <li><a class="Status" href="tembah.php"><p>Tambah Produk</p></a></li>
     </div>
+  </aside>
 
-    <div class="info">
-      <p><strong>Nomor metode pembayaran dengan <?= $labelMetode ?>:</strong><br><?= $nomorPembayaran ?></p>
-      <p><strong>Total Tagihan:</strong><br>Rp. <?= number_format($totalTagihan, 0, ',', '.') ?></p>
-    </div>
+  <main>
+    <h2>Status Pesanan Pelanggan</h2>
 
-    <div class="input-area">
-      <p>Masukan nomor metode pembayaran untuk melakukan pembayaran</p>
-      <input type="text" name="nomor_input" id="inputNomor" placeholder="Masukkan nomor">
-      <button id="btnBayar">Bayar</button> 
-    </div>
-  </div>
-</main>
+    <?php while ($row = $query->fetch_assoc()):
+      $checkout_id = $row['checkout_id'];
+      $produk = $conn->query("SELECT ci.*, p.nama_produk FROM checkout_items ci JOIN produk p ON ci.product_id = p.id WHERE ci.checkout_id = $checkout_id");
+    ?>
+      <form method="post" action="proses_status.php" class="akun-pelanggan">
+        <section><?= $row['nama_lengkap'] ?></section>
+        <section>
+          <ul>
+            <?php while ($p = $produk->fetch_assoc()): ?>
+              <li><?= $p['nama_produk'] ?> (<?= $p['ukuran'] ?>) &nbsp;&nbsp; <?= $p['qty'] ?> &nbsp;&nbsp; Rp <?= number_format($p['harga_satuan'], 0, ',', '.') ?></li>
+            <?php endwhile; ?>
+          </ul>
+        </section>
+        <section>Rp <?= number_format($row['total_bayar'], 0, ',', '.') ?></section>
+        <section><?= $row['alamat'] ?></section>
+        <section>
+          <select name="status_id">
+            <?php foreach ($statusList as $s): ?>
+              <option value="<?= $s['id'] ?>" <?= $s['id'] == $row['status_id'] ? 'selected' : '' ?>><?= $s['nama_status'] ?></option>
+            <?php endforeach; ?>
+          </select>
+        </section>
+        <section>
+          <input type="hidden" name="checkout_id" value="<?= $checkout_id ?>">
+          <input type="hidden" name="user_id" value="<?= $row['user_id'] ?>">
+          <button type="submit">Update</button>
+          <button type="button" class="lihat-bukti" data-checkout="<?= $checkout_id ?>">Lihat Bukti</button>
+        </section>
+      </form>
+    <?php endwhile; ?>
+  </main>
+</div>
 
-<div class="modal-bg" id="modalSuccess">
-  <div class="modal">
-    <h2>Pembayaran Berhasil!</h2>
-    <p>Pembayaran sedang dikonfirmasi admin.</p>
-    <button onclick="window.location.href='../index.php'">Tutup</button>
+<div class="modal-bg" id="modalBukti">
+  <div class="modal" id="modalContent">
+    <h2>Bukti Pembayaran</h2>
+    <div id="buktiDetail">Memuat...</div>
+    <button class="close-btn" onclick="tutupModal()">Tutup</button>
   </div>
 </div>
 
-<?php require '../asstes/header-footer/footer.php'; ?>
-
 <script>
-// Countdown
-const deadline = <?= $deadline ?> * 1000;
-function updateCountdown() {
-  const now = new Date().getTime(); 
-  const diff = deadline - now;
-  if (diff <= 0) {
-    document.getElementById("countdown").textContent = "00 : 00 : 00";
-    return;
-  }
-  const hours = Math.floor(diff / (1000 * 60 * 60)).toString().padStart(2, "0");
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, "0");
-  const seconds = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, "0");
-  document.getElementById("countdown").textContent = `${hours} : ${minutes} : ${seconds}`;
+function tutupModal() {
+  document.getElementById("modalBukti").style.display = "none";
 }
-setInterval(updateCountdown, 1000);
-updateCountdown();
 
-// Validasi nomor pembayaran
-document.getElementById("btnBayar").addEventListener("click", function () {
-  const input = document.getElementById("inputNomor").value.trim();
-  const benar = "<?= $nomorPembayaran ?>".trim();
-  if (input === benar) {
-    document.getElementById("modalSuccess").style.display = "flex";
-
-    // Tambahkan AJAX call kalau mau simpan notifikasi ke DB
-    // contoh: fetch('notifikasi_konfirmasi.php?checkout_id=<?= $_SESSION['checkout_id'] ?>')
-  } else {
-    alert("Nomor pembayaran tidak valid.");
-  }
+document.querySelectorAll(".lihat-bukti").forEach(button => {
+  button.addEventListener("click", function () {
+    const id = this.getAttribute("data-checkout");
+    fetch("../functions/get_bukti_pembayaran.php?checkout_id=" + id)
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("buktiDetail").innerHTML = html;
+        document.getElementById("modalBukti").style.display = "flex";
+      });
+  });
 });
 </script>
 

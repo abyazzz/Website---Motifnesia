@@ -21,11 +21,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nama_status = $query_status->fetch_assoc()['nama_status'];
 
     $judul = "📦 Pesanan kamu $nama_status.";
-    $deskripsi = "Pesanan untuk produk $nama_produk (Ukuran $ukuran, Rp $harga) sedang $nama_status.";
+    $deskripsi = "Pesanan untuk produk sedang $nama_status.";
 
-    $insert_notif = $conn->prepare("INSERT INTO notifikasi (user_id, judul, deskripsi) VALUES (?, ?, ?)");
-    $insert_notif->bind_param("iss", $user_id, $judul, $deskripsi);
-    $insert_notif->execute();
+    $stmt = $conn->prepare("INSERT INTO notifikasi (user_id, judul, deskripsi, waktu, checkout_id) VALUES (?, ?, ?, NOW(), ?)");
+    $stmt->bind_param("issi", $user_id, $judul, $deskripsi, $checkout_id);
+    $stmt->execute();
 
     header("Location: status.php");
     exit;

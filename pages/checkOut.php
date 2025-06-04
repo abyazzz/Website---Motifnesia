@@ -9,12 +9,16 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-if (!isset($_POST['checkout_items']) || empty($_POST['checkout_items'])) {
-    echo "<p>Tidak ada produk yang dipilih untuk checkout.</p>";
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout_items'])) {
+    $_SESSION['checkout_items'] = $_POST['checkout_items'];
+}
+
+if (!isset($_SESSION['checkout_items']) || empty($_SESSION['checkout_items'])) {
+    echo "<script>alert('Tidak ada produk yang dipilih untuk checkout.'); window.location.href='keranjang.php';</script>";
     exit;
 }
 
-$checkout_items = $_POST['checkout_items'];
+$checkout_items = $_SESSION['checkout_items'];
 $produk_data = [];
 $total_harga = 0;
 
@@ -39,9 +43,54 @@ foreach ($checkout_items as $item) {
         $total_harga += $subtotal;
     }
 }
+
+if (
+    isset($_POST['alamat']) &&
+    isset($_POST['pengiriman']) &&
+    isset($_POST['pembayaran'])
+) {
+    $ongkir = match ($_POST['pengiriman']) {
+        'reguler' => 15000,
+        'ekspres' => 20000,
+        'ekonomis' => 10000,
+        default => 0,
+    };
+
+    $total_bayar = $total_harga + $ongkir;
+
+    $_SESSION['checkout_data'] = [
+        'alamat' => $_POST['alamat'],
+        'pengiriman' => $_POST['pengiriman'],
+        'pembayaran' => $_POST['pembayaran'],
+        'total_harga' => $total_harga,
+        'ongkir' => $ongkir,
+        'total_bayar' => $total_bayar,
+        'produk_id' => array_column($produk_data, 'id'),
+        'ukuran' => array_column($produk_data, 'ukuran'),
+        'qty' => array_column($produk_data, 'qty'),
+        'harga' => array_column($produk_data, 'harga'),
+    ];
+
+    $_SESSION['waktu_transaksi'] = date("Y-m-d H:i:s");
+    $_SESSION['nomor_pembayaran'] = match ($_POST['pembayaran']) {
+        'mandiri' => '00384394',
+        'bca' => '00129832',
+        'gopay' => '085777xxxxxx',
+        'cod' => 'BAYAR DI TEMPAT',
+        default => '00000000',
+    };
+    $_SESSION['total_tagihan'] = $total_bayar;
+    $_SESSION['metode_pembayaran'] = $_POST['pembayaran'];
+    $_SESSION['pengiriman'] = $_POST['pengiriman']; // <== TAMBAHAN PENTING BRO!
+
+    header("Location: ../pages/transaksi.php");
+    exit;
+}
 ?>
+>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -53,7 +102,7 @@ foreach ($checkout_items as $item) {
 <?php require '../asstes/header-footer/header.php'; ?>
 
 <main>
-  <form action="../functions/functionCheckOut.php" method="POST">
+  <form method="POST" action="">
     <div class="checkout-container">
       <div class="section alamat">
         <label>Alamat:</label>
@@ -71,10 +120,6 @@ foreach ($checkout_items as $item) {
               <p class="harga">Rp<?= number_format($produk['harga'], 0, ',', '.') ?></p>
             </div>
           </div>
-          <input type="hidden" name="produk_id[]" value="<?= $produk['id'] ?>">
-          <input type="hidden" name="ukuran[]" value="<?= $produk['ukuran'] ?>">
-          <input type="hidden" name="qty[]" value="<?= $produk['qty'] ?>">
-          <input type="hidden" name="harga[]" value="<?= $produk['harga'] ?>">
         <?php endforeach; ?>
       </div>
 
@@ -113,9 +158,6 @@ foreach ($checkout_items as $item) {
           <strong>Total Bayar:</strong>
           <strong id="total-bayar">Rp<?= number_format($total_harga, 0, ',', '.') ?></strong>
         </div>
-        <input type="hidden" name="total_harga" value="<?= $total_harga ?>">
-        <input type="hidden" name="ongkir" id="input-ongkir" value="0">
-        <input type="hidden" name="total_bayar" id="input-total-bayar" value="<?= $total_harga ?>">
         <button type="submit" class="btn-bayar">Bayar</button>
       </div>
     </div>
@@ -131,9 +173,6 @@ foreach ($checkout_items as $item) {
 
       $('#total-ongkir').text('Rp' + ongkir.toLocaleString('id-ID'));
       $('#total-bayar').text('Rp' + totalBayar.toLocaleString('id-ID'));
-
-      $('#input-ongkir').val(ongkir);
-      $('#input-total-bayar').val(totalBayar);
     });
   });
 </script>

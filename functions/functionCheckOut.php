@@ -18,7 +18,7 @@ $total_bayar = $_POST['total_bayar'];
 $produk_id = $_POST['produk_id'];
 $ukuran = $_POST['ukuran'];
 $qty = $_POST['qty'];
-$harga = $_POST['harga'];
+$harga = $_POST['harga']; 
 
 $status_id = 1;
 
