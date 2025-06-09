@@ -57,6 +57,11 @@ $statusList = $conn->query("SELECT * FROM status_transaksi")->fetch_all(MYSQLI_A
         <li><a href="pelanggan.php"><p>Pelanggan</p></a></li>
         <li><a href="#"><p>Status</p></a></li>
         <li><a href="tembah.php"><p>Tambah Produk</p></a></li>
+        <li>
+            <a class="Pelanggan" href="kontenStatis.php"
+              ><p>Konten Statis</p></a
+            >
+          </li>
       </div>
     </aside>
 

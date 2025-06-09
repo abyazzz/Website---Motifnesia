@@ -24,7 +24,7 @@ $total_harga = 0;
 
 foreach ($checkout_items as $item) {
     list($product_id, $ukuran) = explode('|', $item);
-    
+
     $stmt = $conn->prepare("SELECT k.qty, p.nama_produk, p.harga, p.gambar FROM keranjang k JOIN produk p ON k.product_id = p.id WHERE k.user_id = ? AND k.product_id = ? AND k.ukuran = ?");
     $stmt->bind_param("iis", $user_id, $product_id, $ukuran);
     $stmt->execute();
@@ -43,51 +43,7 @@ foreach ($checkout_items as $item) {
         $total_harga += $subtotal;
     }
 }
-
-if (
-    isset($_POST['alamat']) &&
-    isset($_POST['pengiriman']) &&
-    isset($_POST['pembayaran'])
-) {
-    $ongkir = match ($_POST['pengiriman']) {
-        'reguler' => 15000,
-        'ekspres' => 20000,
-        'ekonomis' => 10000,
-        default => 0,
-    };
-
-    $total_bayar = $total_harga + $ongkir;
-
-    $_SESSION['checkout_data'] = [
-        'alamat' => $_POST['alamat'],
-        'pengiriman' => $_POST['pengiriman'],
-        'pembayaran' => $_POST['pembayaran'],
-        'total_harga' => $total_harga,
-        'ongkir' => $ongkir,
-        'total_bayar' => $total_bayar,
-        'produk_id' => array_column($produk_data, 'id'),
-        'ukuran' => array_column($produk_data, 'ukuran'),
-        'qty' => array_column($produk_data, 'qty'),
-        'harga' => array_column($produk_data, 'harga'),
-    ];
-
-    $_SESSION['waktu_transaksi'] = date("Y-m-d H:i:s");
-    $_SESSION['nomor_pembayaran'] = match ($_POST['pembayaran']) {
-        'mandiri' => '00384394',
-        'bca' => '00129832',
-        'gopay' => '085777xxxxxx',
-        'cod' => 'BAYAR DI TEMPAT',
-        default => '00000000',
-    };
-    $_SESSION['total_tagihan'] = $total_bayar;
-    $_SESSION['metode_pembayaran'] = $_POST['pembayaran'];
-    $_SESSION['pengiriman'] = $_POST['pengiriman']; // <== TAMBAHAN PENTING BRO!
-
-    header("Location: ../pages/transaksi.php");
-    exit;
-}
 ?>
->
 
 <!DOCTYPE html>
 <html lang="id">
@@ -102,11 +58,11 @@ if (
 <?php require '../asstes/header-footer/header.php'; ?>
 
 <main>
-  <form method="POST" action="">
+  <form method="POST" action="transaksi.php">
     <div class="checkout-container">
       <div class="section alamat">
         <label>Alamat:</label>
-        <input type="text" name="alamat" required />
+        <input type="text" name="alamat" id="alamat" required />
       </div>
 
       <div class="section produk">
@@ -158,6 +114,19 @@ if (
           <strong>Total Bayar:</strong>
           <strong id="total-bayar">Rp<?= number_format($total_harga, 0, ',', '.') ?></strong>
         </div>
+
+        <!-- hidden untuk JS -->
+        <?php foreach ($produk_data as $produk): ?>
+          <input type="hidden" name="produk_id[]" value="<?= $produk['id'] ?>">
+          <input type="hidden" name="ukuran[]" value="<?= $produk['ukuran'] ?>">
+          <input type="hidden" name="qty[]" value="<?= $produk['qty'] ?>">
+          <input type="hidden" name="harga[]" value="<?= $produk['harga'] ?>">
+        <?php endforeach; ?>
+
+        <input type="hidden" name="total_harga" id="hidden-total-harga" value="<?= $total_harga ?>">
+        <input type="hidden" name="ongkir" id="hidden-ongkir" value="0">
+        <input type="hidden" name="total_bayar" id="hidden-total-bayar" value="<?= $total_harga ?>">
+
         <button type="submit" class="btn-bayar">Bayar</button>
       </div>
     </div>
@@ -165,16 +134,37 @@ if (
 </main>
 
 <script>
-  $(document).ready(function() {
-    $('input[name="pengiriman"]').change(function() {
+  $(document).ready(function () {
+    $('input[name="pengiriman"]').change(function () {
       const ongkir = parseInt($(this).data('ongkir'));
       const totalHarga = <?= $total_harga ?>;
       const totalBayar = ongkir + totalHarga;
 
       $('#total-ongkir').text('Rp' + ongkir.toLocaleString('id-ID'));
       $('#total-bayar').text('Rp' + totalBayar.toLocaleString('id-ID'));
+      $('#hidden-ongkir').val(ongkir);
+      $('#hidden-total-bayar').val(totalBayar);
     });
   });
+
+  function simpanSession() {
+    const data = {
+      alamat: document.getElementById('alamat').value,
+      pengiriman: document.querySelector('input[name="pengiriman"]:checked')?.value,
+      pembayaran: document.querySelector('input[name="pembayaran"]:checked')?.value,
+      total_harga: document.getElementById('hidden-total-harga').value,
+      ongkir: document.getElementById('hidden-ongkir').value,
+      total_bayar: document.getElementById('hidden-total-bayar').value,
+      produk_id: Array.from(document.getElementsByName('produk_id[]')).map(e => e.value),
+      ukuran: Array.from(document.getElementsByName('ukuran[]')).map(e => e.value),
+      qty: Array.from(document.getElementsByName('qty[]')).map(e => e.value),
+      harga: Array.from(document.getElementsByName('harga[]')).map(e => e.value)
+    };
+
+    
+
+    
+  }
 </script>
 
 <?php require '../asstes/header-footer/footer.php'; ?>

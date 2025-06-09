@@ -41,6 +41,7 @@
           <li>
             <a href="#"><i class="fa-solid fa-user"></i></a>
           </li>
+          
         </ul>
       </nav>
       <div class="burger">
@@ -91,6 +92,11 @@
           </li>
           <li>
             <a class="Pelanggan" href="tembah.php"><p>Tambah Produk</p></a>
+          </li>
+          <li>
+            <a class="Pelanggan" href="kontenStatis.php"
+              ><p>Konten Statis</p></a
+            >
           </li>
         </div>
       </aside>

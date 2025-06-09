@@ -10,7 +10,6 @@
   } else {
         $baju = query("SELECT * FROM produk");
   }
-
   if (isset($_POST['harga'])) {
     $range = explode('-', $_POST['harga']);
     $min = (int)$range[0];

@@ -36,8 +36,34 @@ $stmt_log = $conn->prepare("INSERT INTO status_log (checkout_id, status_id, wakt
 $stmt_log->bind_param("ii", $checkout_id, $status_id);
 $stmt_log->execute();
 
-// Simpan checkout_id ke session
+// Simpan ke session
 $_SESSION['checkout_id'] = $checkout_id;
+$_SESSION['waktu_transaksi'] = date("Y-m-d H:i:s");
+$_SESSION['nomor_pembayaran'] = match($data['pembayaran']) {
+    'mandiri' => '00384394',
+    'bca' => '00129832',
+    'gopay' => '085777xxxxxx',
+    'cod' => 'BAYAR DI TEMPAT',
+    default => '00000000',
+};
+$_SESSION['total_tagihan'] = $data['total_bayar'];
+$_SESSION['metode_pembayaran'] = $data['pembayaran'];
+$_SESSION['metode_pengiriman'] = $data['pengiriman']; // ✅ tambah ini
 
-echo 'sukses';
-?>
+echo json_encode([
+  'status' => 'sukses',
+  'metode_label' => match($data['pembayaran']) {
+    'mandiri' => 'Mandiri Virtual Account',
+    'bca' => 'BCA Virtual Account',
+    'gopay' => 'GoPay',
+    'cod' => 'Bayar di Tempat (COD)',
+    default => 'Metode Tidak Dikenal',
+  },
+  'pengiriman_label' => match($data['pengiriman']) {
+    'reguler' => 'Reguler (Rp15.000)',
+    'ekspres' => 'Ekspres (Rp20.000)',
+    'ekonomis' => 'Ekonomis (Rp10.000)',
+    default => 'Tidak diketahui',
+  },
+  'total_bayar' => $data['total_bayar'],
+]);

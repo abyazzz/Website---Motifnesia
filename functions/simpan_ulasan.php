@@ -1,5 +1,4 @@
 <?php
-error_log("product_id = $product_id, rating = $rating, ulasan = $ulasan");
 session_start();
 require '../functions/koneksi.php';
 
@@ -15,6 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $product_id = isset($_POST['product_id']) ? (int)$_POST['product_id'] : 0;
   $rating = isset($_POST['rating']) ? (int)$_POST['rating'] : 0;
   $ulasan = trim($_POST['ulasan'] ?? '');
+
+  // Debug log setelah variabel terdefinisi
+  error_log("product_id = $product_id, rating = $rating, ulasan = $ulasan");
 
   // Validasi input
   if ($product_id <= 0 || $rating < 1 || $rating > 5 || $ulasan === '') {
@@ -35,14 +37,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
   }
 
-  $stmt = $conn->prepare("INSERT INTO ulasan_pelanggan (user_id, product_id, rating, ulasan, waktu) VALUES (?, ?, ?, ?, NOW())");
+  // Insert ulasan ke tabel ulasan_pelanggan
+  $stmt = $conn->prepare("INSERT INTO ulasan_pelanggan (user_id, product_id, rating, deskripsi, created_at) VALUES (?, ?, ?, ?, NOW())");
   $stmt->bind_param("iiis", $user_id, $product_id, $rating, $ulasan);
 
   if ($stmt->execute()) {
     echo "sukses";
   } else {
     http_response_code(500);
-    echo "Gagal menyimpan ulasan.";
+    echo "Gagal menyimpan ulasan: " . $stmt->error;
   }
 } else {
   http_response_code(405);

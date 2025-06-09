@@ -3,10 +3,7 @@
   require '../functions/function.php';
   $baju = query("SELECT * FROM produk");
  
-  if (!isset($_SESSION['login']) || $_SESSION['role'] !== 'admin') {
-      header("Location: pages/halamanlogin2.php");
-      exit;
-  }
+  
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -87,6 +84,11 @@
           <li>
             <a class="Pelanggan" href="tembah.php"
               ><p>Tambah Produk</p></a
+            >
+          </li>
+          <li>
+            <a class="Pelanggan" href="kontenStatis.php"
+              ><p>Konten Statis</p></a
             >
           </li>
         </div>

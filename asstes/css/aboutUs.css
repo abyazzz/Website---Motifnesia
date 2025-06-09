@@ -1,0 +1,229 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: burlywood;
+}
+
+header {
+  width: 100%;
+  height: 1000px;
+  background-image: url(Slideshow/slideshow\ \(1\).webp);
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: fixed;
+  top: 0;
+}
+
+header p {
+  padding: 2px 17px;
+  background-color: #6a4a3c;
+  color: burlywood;
+  text-align: center;
+  margin: 25px 0;
+  border-radius: 10px;
+  font-size: 30px;
+  font-weight: 500px;
+  box-shadow: 0 0 30px 1px rgb(55, 55, 55);
+}
+
+.atas {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 50px;
+  backdrop-filter: blur(7px);
+  box-shadow: 0 0 30px 1px rgb(55, 55, 55);
+}
+
+.atas a {
+  text-decoration: none;
+  background-color: white;
+  color: #d4a373;
+  padding: 5px 6px;
+  border: 2px solid white;
+  border-radius: 6px;
+  transition: 300ms;
+}
+
+.atas a:hover {
+  color: white;
+  background-color: burlywood;
+  border: 2px solid burlywood;
+}
+
+.iklan {
+  width: 100%;
+  height: 750px;
+  background-size: cover;
+  margin: auto;
+}
+
+main {
+  width: 100%;
+  position: absolute;
+  margin-top: 900px;
+  position: relative;
+}
+
+aside {
+  width: 100%;
+  background: transparent;
+}
+
+article {
+  width: 100%;
+  height: 100%;
+  background-color: #d4a373;
+  box-shadow: 0 0 50px 10px rgb(58, 58, 58);
+  border-radius: 0 300px 0 0;
+  overflow: hidden;
+}
+
+main section {
+  width: 1200px;
+  height: 400px;
+  margin-top: 100px;
+  margin: 60px auto;
+  display: flex;
+}
+
+section div {
+  width: 1190px;
+  height: 100%;
+  background-color: royalblue;
+}
+
+.aside {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 30px;
+  text-align: center;
+}
+
+.ttg .foto {
+  background-image: url(ttg.jpg);
+  background-size: cover;
+}
+
+.visi-misi .foto {
+  width: 100%;
+  background-image: url(ttg\ batik.webp);
+  background-size: cover;
+}
+
+.nilai-nilai .foto {
+  background-image: url(Batik-Cap-Infobatik.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.sejarah {
+  width: 1200px;
+  margin: 50px auto;
+}
+
+.sejarah h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sejarah p {
+  text-align: center;
+}
+
+@media (max-width: 1200px) {
+  main section {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  section div {
+    width: 100%;
+  }
+
+  .sejarah {
+    width: 90%;
+  }
+}
+
+@media (max-width: 768px) {
+  article {
+    border-radius: 0;
+    padding: 0 20px;
+  }
+  .ttg .foto, .visi-misi .foto, .nilai-nilai .foto {
+    width: 100%;
+    height: 700px;
+  }
+  .atas {
+    flex-direction: column;
+    height: auto;
+    padding: 20px;
+  }
+
+  .atas h1 {
+    margin: 10px 0;
+  }
+
+  .atas a {
+    margin: 10px 0;
+  }
+
+  main {
+    margin-top: 800px;
+  }
+
+  main section {
+    margin-top: 50px;
+  }
+
+  .sejarah {
+    width: 95%;
+  }
+}
+
+@media (max-width: 480px) {
+  article {
+    border-radius: 0;
+    padding: 0 20px;
+  }
+  .ttg .foto, .visi-misi .foto, .nilai-nilai .foto {
+    width: 100%;
+    height: 700px;
+  }
+  .atas {
+    padding: 10px;
+  }
+
+  .atas h1 {
+    font-size: 1.5rem;
+  }
+
+  .atas a {
+    padding: 10px 20px;
+  }
+
+  main {
+    margin-top: 700px;
+  }
+
+  main section {
+    margin-top: 30px;
+  }
+
+  .sejarah {
+    width: 100%;
+  }
+}

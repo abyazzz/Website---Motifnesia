@@ -27,7 +27,7 @@
                 <li><a href="favorit.php"><i class="fa-regular fa-heart"></i></a></li>
                 <li>
                     <?php if (isset($_SESSION['username'])): ?>
-                        <a href="./pages/profileUser.php">
+                        <a href="profileUser.php">
                             <img src="../uploads/<?= $_SESSION['profile_picture'] ?? 'default.jpg'; ?>" alt="Profile" class="profile-img">
                         </a>
                     <?php else: ?>

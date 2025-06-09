@@ -100,16 +100,34 @@ $user = mysqli_fetch_assoc($result);
       </div>
       <div class="modal-body">
         <?php
-        $q = $conn->query("SELECT ci.product_id, p.nama_produk, p.gambar FROM checkout_items ci
+        $q = $conn->query("SELECT ci.product_id, p.nama_produk, p.gambar,
+          (SELECT rating FROM ulasan_pelanggan WHERE user_id = $id AND product_id = ci.product_id) AS user_rating,
+          (SELECT deskripsi FROM ulasan_pelanggan WHERE user_id = $id AND product_id = ci.product_id) AS user_ulasan
+          FROM checkout_items ci
           JOIN produk p ON ci.product_id = p.id
           JOIN checkout c ON ci.checkout_id = c.id
-          WHERE c.user_id = $id GROUP BY ci.product_id ORDER BY c.created_at DESC");
-        while ($row = $q->fetch_assoc()): ?>
-          <div class="d-flex align-items-center justify-content-between mb-3 p-2" style="background:#f5f5f5; border-radius:6px;">
-            <div class="d-flex align-items-center">
-              <img src="../asstes/img/<?= $row['gambar'] ?>" style="width:50px; height:50px; object-fit:cover; margin-right:10px;">
-              <div><?= $row['nama_produk'] ?></div>
-            </div>
+          WHERE c.user_id = $id
+          GROUP BY ci.product_id
+          ORDER BY c.created_at DESC");
+        while ($row = $q->fetch_assoc()):
+          $sudahUlasan = !is_null($row['user_rating']);
+        ?>
+        <div class="d-flex align-items-center justify-content-between mb-3 p-2" style="background:#f5f5f5; border-radius:6px;">
+          <div class="d-flex align-items-center">
+            <img src="../asstes/img/<?= $row['gambar'] ?>" style="width:50px; height:50px; object-fit:cover; margin-right:10px;">
+            <div><?= $row['nama_produk'] ?></div>
+          </div>
+          <?php if ($sudahUlasan): ?>
+            <button 
+              class="btn btn-secondary lihat-ulasan-btn"
+              data-bs-toggle="modal"
+              data-bs-target="#lihatUlasanModal"
+              data-produk="<?= htmlspecialchars($row['nama_produk']) ?>"
+              data-rating="<?= $row['user_rating'] ?>"
+              data-ulasan="<?= htmlspecialchars($row['user_ulasan']) ?>">
+              Lihat Ulasan
+            </button>
+          <?php else: ?>
             <button 
               class="btn btn-warning beri-ulasan-btn" 
               data-bs-toggle="modal" 
@@ -118,8 +136,12 @@ $user = mysqli_fetch_assoc($result);
               data-produkid="<?= $row['product_id'] ?>">
               Beri Ulasan
             </button>
-          </div>
+          <?php endif; ?>
+        </div>
         <?php endwhile; ?>
+        <div id="ulasanSuccessMsg" class="alert alert-success d-none mt-2">
+          Ulasan berhasil dikirim!
+        </div>
       </div>
     </div>
   </div>
@@ -129,7 +151,7 @@ $user = mysqli_fetch_assoc($result);
 <div class="modal fade" id="ulasanModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <form action="../functions/simpan_ulasan.php" method="post">
+      <form id="formUlasan">
         <div class="modal-header">
           <h5 class="modal-title">Beri Ulasan</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -137,7 +159,6 @@ $user = mysqli_fetch_assoc($result);
         <div class="modal-body">
           <input type="hidden" name="product_id" id="ulasanProductId">
           <div class="mb-3 text-center">
-            <img src="" id="ulasanGambar" style="width:60px;height:60px;display:none;">
             <h6 id="ulasanNamaProduk">Nama Produk</h6>
           </div>
           <div class="mb-3">
@@ -150,8 +171,8 @@ $user = mysqli_fetch_assoc($result);
             <input type="hidden" name="rating" id="ratingValue" required>
           </div>
           <div class="mb-3">
-            <label for="deskripsi">Deskripsi Ulasan:</label>
-            <textarea name="deskripsi" class="form-control" required></textarea>
+            <label for="ulasan">Deskripsi Ulasan:</label>
+            <textarea name="ulasan" class="form-control" required></textarea>
           </div>
         </div>
         <div class="modal-footer">
@@ -162,23 +183,95 @@ $user = mysqli_fetch_assoc($result);
   </div>
 </div>
 
-<script>
-  const stars = document.querySelectorAll('.star-rating i');
-  stars.forEach(star => {
-    star.addEventListener('click', () => {
-      const value = star.getAttribute('data-value');
-      document.getElementById('ratingValue').value = value;
-      stars.forEach(s => s.classList.remove('selected'));
-      for (let i = 0; i < value; i++) stars[i].classList.add('selected');
-    });
-  });
+<!-- Modal Lihat Ulasan -->
+<div class="modal fade" id="lihatUlasanModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ulasan Kamu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h6 id="lihatNamaProduk">Nama Produk</h6>
+        <div class="mb-2" id="lihatRating"></div>
+        <p id="lihatDeskripsi"></p>
+      </div>
+    </div>
+  </div>
+</div>
 
-  document.querySelectorAll('.beri-ulasan-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const nama = btn.getAttribute('data-produk');
-      const id = btn.getAttribute('data-produkid');
-      document.getElementById('ulasanNamaProduk').textContent = nama;
-      document.getElementById('ulasanProductId').value = id;
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const stars = document.querySelectorAll('.star-rating i');
+    stars.forEach(star => {
+      star.addEventListener('click', () => {
+        const value = star.getAttribute('data-value');
+        document.getElementById('ratingValue').value = value;
+        stars.forEach(s => s.classList.remove('selected'));
+        for (let i = 0; i < value; i++) stars[i].classList.add('selected');
+      });
+    });
+
+    document.querySelectorAll('.beri-ulasan-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const nama = btn.getAttribute('data-produk');
+        const id = btn.getAttribute('data-produkid');
+        document.getElementById('ulasanNamaProduk').textContent = nama;
+        document.getElementById('ulasanProductId').value = id;
+        document.getElementById('ratingValue').value = '';
+        stars.forEach(s => s.classList.remove('selected'));
+      });
+    });
+
+    document.querySelectorAll('.lihat-ulasan-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const nama = btn.getAttribute('data-produk');
+        const rating = parseInt(btn.getAttribute('data-rating'));
+        const ulasan = btn.getAttribute('data-ulasan');
+
+        document.getElementById('lihatNamaProduk').textContent = nama;
+
+        const ratingContainer = document.getElementById('lihatRating');
+        ratingContainer.innerHTML = '';
+        for (let i = 1; i <= 5; i++) {
+          const star = document.createElement('i');
+          star.className = 'fa fa-star' + (i <= rating ? ' text-warning' : ' text-secondary');
+          ratingContainer.appendChild(star);
+        }
+
+        document.getElementById('lihatDeskripsi').textContent = ulasan;
+      });
+    });
+
+    document.getElementById('formUlasan').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+
+      fetch('../functions/simpan_ulasan.php', {
+        method: 'POST',
+        body: formData
+      })
+        .then(res => res.text())
+        .then(result => {
+          if (result.trim() === 'sukses') {
+            bootstrap.Modal.getInstance(document.getElementById('ulasanModal')).hide();
+            const successMsg = document.getElementById('ulasanSuccessMsg');
+            successMsg.classList.remove('d-none');
+            successMsg.textContent = 'Ulasan berhasil dikirim!';
+            form.reset();
+            stars.forEach(s => s.classList.remove('selected'));
+            setTimeout(() => {
+              successMsg.classList.add('d-none');
+            }, 4000);
+          } else {
+            alert(result);
+          }
+        })
+        .catch(err => {
+          console.error('Error:', err);
+          alert('Gagal mengirim ulasan.');
+        });
     });
   });
 </script>

@@ -1,27 +1,16 @@
 <?php 
-    require '../functions/function.php';
-
-    if (isset($_POST["submit"])) {
-        if (tambahProduk($_POST, $_FILES) > 0) {
-            echo "<script>
-                    alert('Data berhasil ditambahkan!');
-                    document.location.href='tembah.php';
-                  </script>";
-        } else {
-            echo "<script>
-                    alert('Data gagal ditambahkan!');
-                  </script>";
-        }
-    }
+  require '../functions/koneksi.php';
+  $about = mysqli_query($conn, "SELECT * FROM about_us LIMIT 1");
+  $data = mysqli_fetch_assoc($about);
+  
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="css/tambah.css" />
+    <link rel="stylesheet" href="css/kontenStatis.css" />
     <link rel="stylesheet" href="../asstes/css/header.css">
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -55,6 +44,12 @@
         <div class="line3"></div>
     </div>
 </header>
+<script>const burger = document.querySelector('.burger');
+  const nav = document.querySelector('.huhu ul');
+  
+  burger.addEventListener('click', () => {
+      nav.classList.toggle('nav-active');
+  });</script>
     <div class="container">
       <aside>
         <section class="profil">
@@ -76,9 +71,9 @@
             <a class="Pelanggan" href="penjualan.php"
               ><p>Penjualan & Stok</p></a
             >
-          </li> 
+          </li>
           <li>
-            <a class="pelanggan" href="pelanggan.html"
+            <a class="pelanggan" href="pelanggan.php"
               ><p>Pelanggan</p></a
             >
           </li>
@@ -99,49 +94,100 @@
       </aside>
       <main>
         <section class="main">
-          <div class="judul">Tambah Produk</div>
-          <form action="" method="POST" enctype="multipart/form-data">
-            <div class="add">
-              <div class="filee">
-                <input type="file" name="gambar" required />
-              </div>
-              <div class="input-card">
-                <section>
-                  <p>Nama Produk:</p>
-                  <input type="text" name="nama_produk" required />
-                </section>
-                <section><p>Harga:</p><input type="number" name="harga" required /></section>
-                <section><p>Material:</p><input type="text" name="material" required /></section>
-                <section><p>Proses:</p><input type="text" name="proses" required /></section>
-                <section><p>SKU:</p><input type="text" name="sku" required /></section>
-                <section><p>Tags:</p><input type="text" name="tags" required /></section>
-                <section><p>Jumlah Stok:</p><input type="number" name="stok"></section>
-                <section><p>Gender</p>
-                  <select name="kategori" required>
-                    <option value="pria">Pria</option>
-                    <option value="wanita">Wanita</option>
-                    <option value="anak_anak">Anak-anak</option>
-                  </select>
-                </section>
-                <section><p>Jenis Lengan</p>
-                  <select name="jenis_lengan" required>
-                    <option value="panjang">panjang</option>
-                    <option value="pendek">pendek</option>
-                  </select>
-                </section>
-                <section>
-                <p>Deskripsi Produk</p><textarea name="deskripsi" required></textarea>
-                </section>
-                <button type="submit" name="submit">Tambah Produk +</button>
-              </div>
-            </div>
-          </form>
+          <div class="judul">Konten</div>
+
+<!-- Nav tab horizontal -->
+<div class="tab-nav">
+  <button class="tab-btn active" data-target="#about">About Us</button>
+  <button class="tab-btn" data-target="#icon">Icon</button>
+</div>
+
+<!-- Isi konten masing-masing -->
+<div id="about" class="tab-pane active">
+  <h4>Konten About Us</h4>
+  <form action="simpan_aboutus.php" method="POST" enctype="multipart/form-data">
+  <<div class="bg-banner">
+  <p>Background Banner</p>
+  <?php if (!empty($data['bg_banner'])): ?>
+    <img src="<?= $data['bg_banner'] ?>" width="200" alt="Preview Banner">
+  <?php endif; ?>
+  <input type="file" name="bg_banner">
+</div>
+
+  <div class="ttg-kami">
+  <p>Tentang Kami:</p>
+  <?php if (!empty($data['img_ttg_kami'])): ?>
+    <img src="<?= $data['img_ttg_kami'] ?>" width="200" alt="Preview">
+  <?php endif; ?>
+  <input type="file" name="img_ttg_kami">
+
+  <p>Deskripsi</p>
+  <input type="text" name="desc_ttg_kami" value="<?= htmlspecialchars($data['desc_ttg_kami'] ?? '') ?>">
+</div>
+
+
+  <div class="visi-misi">
+  <p>Visi-Misi</p>
+  <?php if (!empty($data['img_visi_misi'])): ?>
+    <img src="<?= $data['img_visi_misi'] ?>" width="200" alt="Preview">
+  <?php endif; ?>
+  <input type="file" name="img_visi_misi">
+
+  <p>Deskripsi</p>
+  <input type="text" name="desc_visi_misi" value="<?= htmlspecialchars($data['desc_visi_misi'] ?? '') ?>">
+</div>
+
+
+  <div class="Nilai-Nilai">
+  <p>Nilai-Nilai</p>
+  <?php if (!empty($data['img_nilai'])): ?>
+    <img src="<?= $data['img_nilai'] ?>" width="200" alt="Preview">
+  <?php endif; ?>
+  <input type="file" name="img_nilai">
+
+  <p>Deskripsi</p>
+  <input type="text" name="desc_nilai" value="<?= htmlspecialchars($data['desc_nilai'] ?? '') ?>">
+</div>
+
+  <div class="sejarah-batik">
+  <p>Sejarah Batik</p>
+  <textarea name="sejarah_batik" rows="5"><?= htmlspecialchars($data['sejarah_batik'] ?? '') ?></textarea>
+</div>
+<button type="submit">Simpan</button>
+  </form>
+</div>
+
+<div id="icon" class="tab-pane">
+  <h4>Konten Icon</h4>
+  <p>Ini adalah konten icon-icon seperti logo, keranjang, dll.</p>
+</div>
+
+
+            
         </section>
       </main>
     </div>
     <footer class="admin-footer">
       <p>© 2024 NusantaraBatik Admin Dashboard | All rights reserved | Version 1.0.0</p>
     </footer>
+    <script>
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-pane');
+
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      // Reset semua tab dan konten
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      tabContents.forEach(content => content.classList.remove('active'));
+
+      // Aktifkan tab yang dipilih
+      button.classList.add('active');
+      const target = document.querySelector(button.getAttribute('data-target'));
+      target.classList.add('active');
+    });
+  });
+</script>
+
+
   </body>
 </html>
-

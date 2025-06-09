@@ -1,0 +1,165 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100%;
+  height: 89vh;
+  display: flex;
+  padding: 15px;
+  gap: 1rem;
+}
+
+aside {
+  flex: 2;
+  width: 100%;
+  box-shadow: 0 0 10px 1px gray;
+  border-radius: 18px;
+  overflow: hidden;
+  background-color: #6a4a3c;
+}
+.profil {
+  width: 100%;
+  height: 180px;
+  background-color: #6a4a3c;
+  border-bottom: 3px solid burlywood;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.profil p {
+  font-size: 18px;
+  color: white;
+}
+
+.nav {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nav li {
+  width: 90%;
+  height: 35px;
+  background-color: burlywood;
+  margin: 5px 0;
+  border: 1px solid gray;
+  border-radius: 10px;
+  list-style: none;
+  padding-left: 20px;
+  transition: 300ms;
+}
+
+.nav li:hover {
+  transform: scale(1.01);
+}
+
+.nav li a {
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  color: black;
+  margin-top: 7px;
+}
+
+main {
+  flex: 8;
+  width: 100%;
+  height: 100%;
+}
+
+.judul {
+  width: 100%;
+  height: 50px;
+  background-color: burlywood;
+  border-radius: 20px 20px 0 0;
+  color: #6a4a3c;
+  font-size: 24px;
+  font-weight: 800px;
+  text-align: center;
+  padding-top: 7px;
+}
+
+.main {
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 0 10px 1px gray;
+  border-radius: 20px;
+  overflow: hidden;
+  padding-bottom: 100px;
+  padding-bottom: 40px;
+}
+
+
+.admin-footer {
+  background-color: #6a4a3c; /* Warna coklat gelap sesuai tema */
+  color: #fff; /* Teks warna putih */
+  text-align: center;
+  padding: 0 20px;
+  font-size: 14px;
+  position: fixed; /* Sticky footer */
+  bottom: 0;
+  width: 100%; /* Full width */
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Sedikit bayangan */
+}
+
+/* Tab navigasi horizontal */
+.tab-nav {
+  display: flex;
+  gap: 10px;
+  padding: 15px;
+  background-color: #f3e5d8;
+  border-bottom: 2px solid burlywood;
+}
+
+.tab-nav button {
+  background-color: burlywood;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  color: #6a4a3c;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.tab-nav button:hover {
+  background-color: #d1b08c;
+}
+
+.tab-nav button.active {
+  background-color: #6a4a3c;
+  color: white;
+}
+
+/* Konten tab */
+.tab-pane {
+  padding: 20px;
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+
+.admin-footer p {
+  font-size: 11px;
+  margin: 5px 0;
+}
+
+/* Responsif untuk layar kecil */
+@media (max-width: 768px) {
+  .admin-footer {
+    font-size: 11px; /* Teks lebih kecil */
+    padding: 0 15px;
+  }
+}
