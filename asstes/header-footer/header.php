@@ -19,7 +19,7 @@
         <nav class="huhu">
             <ul>
                 <li><a href="../index.php">Home</a></li>
-                <li><a href="dasbord.html">About Us</a></li>
+                <li><a href="aboutUs.php">About Us</a></li>
                 <li><a href="ZZcontact2.html">Contact</a></li>
                 <li><a href="ZZlayanankami.html">Service</a></li>
                 <li><a href="notifikasi.php">Notif</a></li>

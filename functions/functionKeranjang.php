@@ -1,13 +1,10 @@
 <?php
-// HAPUS session_start() di sini karena sudah dipanggil di keranjang.php
-    require 'koneksi.php';
+require 'koneksi.php';
 
-    // Tambah produk ke keranjang
-    function tambahKeKeranjang($product_id, $ukuran) {
+function tambahKeKeranjang($product_id, $ukuran) {
     global $conn;
     $user_id = $_SESSION['user_id'];
 
-    // Cek apakah produk + ukuran sudah ada
     $cek = $conn->query("SELECT * FROM keranjang 
                          WHERE user_id = $user_id AND product_id = $product_id AND ukuran = '$ukuran'");
 
@@ -21,33 +18,35 @@
     }
 }
 
-    // Fungsi ini TIDAK DIUBAH karena sudah benar
-    function getIsiKeranjang() {
-        global $conn;
-        $user_id = $_SESSION['user_id'];
-        
-        $query = "SELECT k.*, p.nama_produk, p.harga, p.gambar
-                                FROM keranjang k
-                                JOIN produk p ON k.product_id = p.id
-                                WHERE k.user_id = $user_id";
-        $result = mysqli_query($conn, $query);
-        $data = [];
-        while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
-        }
-        return $data;
+function getIsiKeranjang() {
+    global $conn;
+    $user_id = $_SESSION['user_id'];
+
+    $query = "SELECT 
+                k.*, 
+                p.nama_produk, 
+                p.harga, 
+                p.diskon_persen,
+                p.gambar 
+              FROM keranjang k
+              JOIN produk p ON k.product_id = p.id
+              WHERE k.user_id = $user_id";
+
+    $result = mysqli_query($conn, $query);
+    $data = [];
+    while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
     }
+    return $data;
+}
 
-    // Hapus produk dari keranjang
-    function hapusDariKeranjang($product_id) {
-        global $conn;
-        $user_id = $_SESSION['user_id'];
+function hapusDariKeranjang($product_id) {
+    global $conn;
+    $user_id = $_SESSION['user_id'];
+    $conn->query("DELETE FROM keranjang WHERE user_id = $user_id AND product_id = $product_id");
+}
 
-        $conn->query("DELETE FROM keranjang WHERE user_id = $user_id AND product_id = $product_id");
-    }
-
-    // Update jumlah qty produk
-    function updateQty($product_id, $ukuran, $delta) {
+function updateQty($product_id, $ukuran, $delta) {
     global $conn;
     $user_id = $_SESSION['user_id'];
 
@@ -67,4 +66,3 @@
                       WHERE user_id = $user_id AND product_id = $product_id AND ukuran = '$ukuran'");
     }
 }
- 

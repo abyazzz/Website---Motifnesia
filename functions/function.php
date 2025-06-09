@@ -26,6 +26,9 @@
         $kategori      = htmlspecialchars($data["kategori"]     );
         $jenis_lengan  = htmlspecialchars($data["jenis_lengan"] );
         $deskripsi     = htmlspecialchars($data["deskripsi"]    );
+        $diskon_persen = htmlspecialchars($data["diskon_persen"]);
+        $harga_diskon  = $harga - ($harga * $diskon_persen / 100);
+
     
         // Upload Gambar
         $namaFile = $file['gambar']['name'];
@@ -57,10 +60,11 @@
         }
     
         // Simpan data ke database
-        $query = "INSERT INTO produk 
-                    (gambar, nama_produk, harga, material, proses, sku, tags, stok, kategori, jenis_lengan, deskripsi )
-                  VALUES 
-                    ('$namaBaru', '$nama_produk', '$harga', '$material', '$proses', '$sku', '$tags', '$stok', '$kategori', '$jenis_lengan', '$deskripsi ')";
+       $query = "INSERT INTO produk 
+                (gambar, nama_produk, harga, diskon_persen, harga_diskon, material, proses, sku, tags, stok, kategori, jenis_lengan, deskripsi)
+                VALUES 
+                ('$namaBaru', '$nama_produk', '$harga', '$diskon_persen', '$harga_diskon', '$material', '$proses', '$sku', '$tags', '$stok', '$kategori', '$jenis_lengan', '$deskripsi')";
+
     
         $result = mysqli_query($conn, $query);
         if (!$result) {
@@ -71,6 +75,18 @@
         return mysqli_affected_rows($conn);
     }
     
+    function getHargaFinal($produk) {
+    if (!is_array($produk) || !isset($produk['harga'])) {
+        return 0;
+    }
+
+    if (isset($produk['diskon_persen']) && $produk['diskon_persen'] > 0 && isset($produk['harga_diskon'])) {
+        return $produk['harga_diskon'];
+    }
+
+    return $produk['harga'];
+    }
+
     function hapusProduk($id) {
         global $conn;
         mysqli_query($conn, "DELETE FROM produk WHERE id = $id");

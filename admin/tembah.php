@@ -110,7 +110,20 @@
                   <p>Nama Produk:</p>
                   <input type="text" name="nama_produk" required />
                 </section>
-                <section><p>Harga:</p><input type="number" name="harga" required /></section>
+                <section>
+                  <p>Harga:</p>
+                  <input type="number" name="harga" id="harga" required />
+                </section>
+
+                <section>
+                  <p>Diskon (%):</p>
+                  <input type="number" name="diskon_persen" id="diskon_persen" value="0" min="0" max="100" />
+                </section>
+
+                <section>
+                  <p>Harga Setelah Diskon:</p>
+                  <input type="text" id="harga_diskon" readonly />
+                </section>
                 <section><p>Material:</p><input type="text" name="material" required /></section>
                 <section><p>Proses:</p><input type="text" name="proses" required /></section>
                 <section><p>SKU:</p><input type="text" name="sku" required /></section>
@@ -143,5 +156,20 @@
       <p>© 2024 NusantaraBatik Admin Dashboard | All rights reserved | Version 1.0.0</p>
     </footer>
   </body>
+  <script>
+  const hargaInput = document.getElementById('harga');
+  const diskonInput = document.getElementById('diskon_persen');
+  const hargaDiskonInput = document.getElementById('harga_diskon');
+
+  function hitungHargaDiskon() {
+    const harga = parseFloat(hargaInput.value) || 0;
+    const diskon = parseFloat(diskonInput.value) || 0;
+    const hasil = harga - (harga * diskon / 100);
+    hargaDiskonInput.value = hasil.toFixed(2);
+  }
+
+  hargaInput.addEventListener('input', hitungHargaDiskon);
+  diskonInput.addEventListener('input', hitungHargaDiskon);
+</script>
 </html>
 

@@ -25,7 +25,7 @@ $data = mysqli_fetch_assoc($about);
     <section class="atas">
       <h1></h1>
       <p>NusantaraBatik</p>
-      <a href="inedk.html">SHOP NOW</a>
+      <a href="../index.php">SHOP NOW</a>
     </section>
 
     <!-- Background Banner -->

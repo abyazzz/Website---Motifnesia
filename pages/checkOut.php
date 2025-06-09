@@ -25,19 +25,20 @@ $total_harga = 0;
 foreach ($checkout_items as $item) {
     list($product_id, $ukuran) = explode('|', $item);
 
-    $stmt = $conn->prepare("SELECT k.qty, p.nama_produk, p.harga, p.gambar FROM keranjang k JOIN produk p ON k.product_id = p.id WHERE k.user_id = ? AND k.product_id = ? AND k.ukuran = ?");
+    $stmt = $conn->prepare("SELECT k.qty, p.nama_produk, p.harga, p.diskon_persen, p.gambar FROM keranjang k JOIN produk p ON k.product_id = p.id WHERE k.user_id = ? AND k.product_id = ? AND k.ukuran = ?");
     $stmt->bind_param("iis", $user_id, $product_id, $ukuran);
     $stmt->execute();
     $result = $stmt->get_result();
     if ($row = $result->fetch_assoc()) {
-        $subtotal = $row['harga'] * $row['qty'];
+        $harga_diskon = $row['diskon_persen'] > 0 ? $row['harga'] - ($row['harga'] * $row['diskon_persen'] / 100) : $row['harga'];
+        $subtotal = $harga_diskon * $row['qty'];
         $produk_data[] = [
             'id' => $product_id,
             'nama' => $row['nama_produk'],
             'gambar' => $row['gambar'],
             'ukuran' => $ukuran,
             'qty' => $row['qty'],
-            'harga' => $row['harga'],
+            'harga' => $harga_diskon,
             'subtotal' => $subtotal
         ];
         $total_harga += $subtotal;
@@ -64,6 +65,7 @@ foreach ($checkout_items as $item) {
         <label>Alamat:</label>
         <input type="text" name="alamat" id="alamat" required />
       </div>
+
       <?php foreach ($produk_data as $produk): ?>
         <input type="hidden" name="produk_id[]" value="<?= $produk['id'] ?>">
         <input type="hidden" name="ukuran[]" value="<?= $produk['ukuran'] ?>">
@@ -122,14 +124,6 @@ foreach ($checkout_items as $item) {
           <strong id="total-bayar">Rp<?= number_format($total_harga, 0, ',', '.') ?></strong>
         </div>
 
-        <!-- hidden untuk JS -->
-        <?php foreach ($produk_data as $produk): ?>
-          <input type="hidden" name="produk_id[]" value="<?= $produk['id'] ?>">
-          <input type="hidden" name="ukuran[]" value="<?= $produk['ukuran'] ?>">
-          <input type="hidden" name="qty[]" value="<?= $produk['qty'] ?>">
-          <input type="hidden" name="harga[]" value="<?= $produk['harga'] ?>">
-        <?php endforeach; ?>
-
         <input type="hidden" name="total_harga" id="hidden-total-harga" value="<?= $total_harga ?>">
         <input type="hidden" name="ongkir" id="hidden-ongkir" value="0">
         <input type="hidden" name="total_bayar" id="hidden-total-bayar" value="<?= $total_harga ?>">
@@ -153,25 +147,6 @@ foreach ($checkout_items as $item) {
       $('#hidden-total-bayar').val(totalBayar);
     });
   });
-
-  function simpanSession() {
-    const data = {
-      alamat: document.getElementById('alamat').value,
-      pengiriman: document.querySelector('input[name="pengiriman"]:checked')?.value,
-      pembayaran: document.querySelector('input[name="pembayaran"]:checked')?.value,
-      total_harga: document.getElementById('hidden-total-harga').value,
-      ongkir: document.getElementById('hidden-ongkir').value,
-      total_bayar: document.getElementById('hidden-total-bayar').value,
-      produk_id: Array.from(document.getElementsByName('produk_id[]')).map(e => e.value),
-      ukuran: Array.from(document.getElementsByName('ukuran[]')).map(e => e.value),
-      qty: Array.from(document.getElementsByName('qty[]')).map(e => e.value),
-      harga: Array.from(document.getElementsByName('harga[]')).map(e => e.value)
-    };
-
-    
-
-    
-  }
 </script>
 
 <?php require '../asstes/header-footer/footer.php'; ?>

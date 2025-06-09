@@ -5,6 +5,12 @@ require '../functions/function.php';
 require '../functions/functionKeranjang.php'; // Jangan lupa include ini!
 require '../functions/functionFavorit.php';
 
+$id_produk = $_GET['id'] ?? null;
+if ($id_produk) {
+  $query = mysqli_query($conn, "SELECT * FROM produk WHERE id = $id_produk");
+  $produk = mysqli_fetch_assoc($query);
+}
+
 $baju = query("SELECT * FROM produk");
 $id = $_GET["id"];
 $dataProduk = query("SELECT * FROM produk WHERE id = $id")[0];
@@ -105,7 +111,7 @@ if ($jumlahUlasan > 0) {
         </div>
         <div class="deskripsi">
           <h1><?= $dataProduk["nama_produk"]; ?></h1>
-          <div class="harga"><?= $dataProduk["harga"]; ?></div>
+          <div class="harga">Rp<?= number_format(getHargaFinal($produk), 0, ',', '.') ?></div>
           <ul class="info">
             <li><strong>Material:</strong><?= $dataProduk["material"]; ?></li>
             <li><strong>Proses:</strong> <?= $dataProduk["proses"]; ?></li>
@@ -142,7 +148,7 @@ if ($jumlahUlasan > 0) {
         
         <div class="desk">
           <h2>Deskripsi</h2>
-        <?= $dataProduk["deskripsi"]; ?>
+        <?= $dataProduk["deskripsi"]; ?> 
         </div>
       </div>
       <div class="ulasan">
@@ -173,7 +179,7 @@ if ($jumlahUlasan > 0) {
             <img src="../asstes/img/<?php echo $row['gambar']; ?>" class="foto"></img >
             <div class="">
               <p><?php echo $row['nama_produk']; ?></p>
-              <h2><?php echo number_format($row['harga'], 0, ',', '.'); ?></h2>
+              <h2>Rp<?= number_format(getHargaFinal($produk), 0, ',', '.') ?></h2>
               <section>
                 <i class="fa-solid fa-star"></i>
                 <p>5.0</p>

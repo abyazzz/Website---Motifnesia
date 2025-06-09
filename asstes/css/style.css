@@ -170,6 +170,39 @@ main {
   height: 180px;
 }
 
+.info-produk {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nama-produk {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.harga-diskon {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+  color: black;
+}
+
+.harga-normal-wrapper {
+  display: inline;
+}
+
+.harga-normal {
+  text-decoration: line-through;
+  color: red;
+  font-size: 14px;
+}
+
+.diskon-label {
+  color: green;
+  font-size: 13px;
+}
+
 /* Tambahkan media queries untuk responsif */
 @media (max-width: 768px) {
   .huu .carousel-inner {
