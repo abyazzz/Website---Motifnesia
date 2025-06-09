@@ -2,13 +2,24 @@
 session_start();
 require '../functions/koneksi.php';
 
+header('Content-Type: application/json'); // ✅ ini WAJIB
+
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['checkout_data'])) {
     http_response_code(400);
-    echo 'Session tidak valid';
+    echo json_encode(['status' => 'gagal', 'message' => 'Session tidak valid']);
     exit;
 }
 
-$data = $_SESSION['checkout_data'];
+$data = $_SESSION['checkout_data']; // ✅ JANGAN taruh di bawah
+
+$produk_dibeli = [];
+for ($i = 0; $i < count($data['produk_id']); $i++) {
+    $produk_dibeli[] = [
+        'nama' => $data['produk_nama'][$i] ?? 'Produk',
+        'qty' => $data['qty'][$i]
+    ];
+}
+
 $user_id = $_SESSION['user_id'];
 $status_id = 1;
 
@@ -66,4 +77,5 @@ echo json_encode([
     default => 'Tidak diketahui',
   },
   'total_bayar' => $data['total_bayar'],
+  'produk_dibeli' => $produk_dibeli
 ]);

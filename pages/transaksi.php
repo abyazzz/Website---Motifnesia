@@ -4,7 +4,6 @@ ini_set('display_errors', 1);
 session_start();
 require '../asstes/header-footer/header.php';
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['alamat'])) {
     $_SESSION['checkout_data'] = [
         'alamat' => $_POST['alamat'],
@@ -17,13 +16,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['alamat'])) {
         'ukuran' => $_POST['ukuran'],
         'qty' => $_POST['qty'],
         'harga' => $_POST['harga'],
+        'produk_nama' => $_POST['produk_nama'] // ✅ ini yang belum ada sebelumnya
     ];
 }
 
-
-if (!isset($_SESSION['checkout_id']) || !isset($_SESSION['waktu_transaksi'])) {
+if (!isset($_SESSION['checkout_data'])) {
     header("Location: checkOut.php");
     exit;
+}
+
+if (!isset($_SESSION['checkout_id'])) {
+    $_SESSION['waktu_transaksi'] = date("Y-m-d H:i:s");
 }
 
 $data = $_SESSION['checkout_data'];
@@ -42,9 +45,8 @@ $nomorPembayaran = match($metode) {
     'cod' => 'BAYAR DI TEMPAT',
     default => '00000000',
 };
-$totalTagihan = $_SESSION['total_tagihan'];
-$metode = $_SESSION['metode_pembayaran'];
-$pengiriman = $_SESSION['metode_pengiriman']; // ✅ ambil dari session
+
+$totalTagihan = $_SESSION['total_tagihan'] ?? $_SESSION['checkout_data']['total_bayar'] ?? 0;
 
 $labelMetode = match($metode) {
     'mandiri' => 'Mandiri Virtual Account',
@@ -54,7 +56,7 @@ $labelMetode = match($metode) {
     default => 'Metode Tidak Dikenal',
 };
 
-$labelPengiriman = match($pengiriman) {
+$labelPengiriman = match($data['pengiriman']) {
     'reguler' => 'Reguler (Rp15.000)',
     'ekspres' => 'Ekspres (Rp20.000)',
     'ekonomis' => 'Ekonomis (Rp10.000)',
@@ -62,12 +64,10 @@ $labelPengiriman = match($pengiriman) {
 };
 ?>
 
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Halaman Pembayaran</title>
   <link rel="stylesheet" href="../asstes/css/transaksi.css"/>
   <style>
@@ -87,9 +87,7 @@ $labelPengiriman = match($pengiriman) {
       width: 300px;
       text-align: center;
     }
-    .modal h2 {
-      color: green;
-    }
+    .modal h2 { color: green; }
   </style>
 </head>
 <body>
@@ -106,7 +104,7 @@ $labelPengiriman = match($pengiriman) {
 
     <div class="info">
       <p><strong>Nomor metode pembayaran dengan <?= $labelMetode ?>:</strong><br><?= $nomorPembayaran ?></p>
-      <p><strong>Total Tagihan:</strong><br>Rp. <?= number_format($totalTagihan, 0, ',', '.') ?></p>
+      <p><strong>Total Tagihan:</strong><br>Rp. <?= $totalTagihan ? number_format($totalTagihan, 0, ',', '.') : '-' ?></p>
     </div>
 
     <div class="input-area">
@@ -121,10 +119,11 @@ $labelPengiriman = match($pengiriman) {
   <div class="modal">
     <h2>Pembayaran Berhasil!</h2>
     <p>Pembayaran sedang dikonfirmasi admin.</p>
-  <p class="pengiriman">Metode Pengiriman: <?= $labelPengiriman ?></p>
-  <p class="metode">Metode Pembayaran: <?= $labelMetode ?></p>
-  <p class="total">Total Bayar: Rp <?= number_format($totalTagihan, 0, ',', '.') ?></p>
-    <button onclick="window.location.href='../index.php'">Tutup</button>
+    <div class="produk-list" style="text-align:left; font-size: 14px; margin: 10px 0;"></div>
+    <p class="pengiriman">Metode Pengiriman: <?= $labelPengiriman ?></p>
+    <p class="metode">Metode Pembayaran: <?= $labelMetode ?></p>
+    <p class="total">Total Bayar: Rp <?= number_format($totalTagihan, 0, ',', '.') ?></p>
+    <button onclick="resetCheckout()">Tutup</button>
   </div>
 </div>
 
@@ -154,13 +153,15 @@ document.getElementById("btnBayar").addEventListener("click", function () {
 
   if (input === benar) {
     fetch("../functions/proses_transaksi.php")
-      .then(response => response.json()) // ubah ke JSON
+      .then(response => response.json())
       .then(result => {
         if (result.status === "sukses") {
-          // update modal dengan data terbaru dari response
           document.querySelector("#modalSuccess .metode").textContent = result.metode_label;
           document.querySelector("#modalSuccess .pengiriman").textContent = result.pengiriman_label;
           document.querySelector("#modalSuccess .total").textContent = "Rp " + Number(result.total_bayar).toLocaleString("id-ID");
+
+          const daftarProduk = result.produk_dibeli.map(p => `- ${p.nama} (x${p.qty})`).join('<br>');
+          document.querySelector("#modalSuccess .produk-list").innerHTML = daftarProduk;
 
           document.getElementById("modalSuccess").style.display = "flex";
         } else {
@@ -172,6 +173,11 @@ document.getElementById("btnBayar").addEventListener("click", function () {
     alert("Nomor pembayaran tidak valid.");
   }
 });
+
+function resetCheckout() {
+  fetch("../functions/reset_checkout.php")
+    .then(() => window.location.href = "../index.php");
+}
 </script>
 
 </body>

@@ -103,10 +103,15 @@
                   <p><?php echo $row['nama_produk']; ?></p>
                   <h2>Rp. <?php echo number_format($row['harga'], 0, ',', '.'); ?></h2>
                   <section>
-                  <i class="fa-solid fa-star"></i>
-                  <p>5.0</p>
-                  <i class="fa-regular fa-heart"></i>
-                </section>
+                    <i class="fa-solid fa-star"></i>
+                    <?php 
+                      $produk_id = $row['id'];
+                      $rating_result = mysqli_query($conn, "SELECT ROUND(AVG(rating), 1) AS avg_rating FROM ulasan_pelanggan WHERE product_id = $produk_id");
+                      $rating_row = mysqli_fetch_assoc($rating_result);
+                      $avg_rating = $rating_row['avg_rating'] ?? 0;
+                    ?>
+                    <p><?= $avg_rating ?></p>
+                  </section>
               </div>
             </a>
           <?php endforeach ?>

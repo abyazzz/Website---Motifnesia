@@ -100,6 +100,7 @@
 <div class="tab-nav">
   <button class="tab-btn active" data-target="#about">About Us</button>
   <button class="tab-btn" data-target="#icon">Icon</button>
+  <button class="tab-btn" data-target="#slideshow">Slideshow</button>
 </div>
 
 <!-- Isi konten masing-masing -->
@@ -161,6 +162,54 @@
   <h4>Konten Icon</h4>
   <p>Ini adalah konten icon-icon seperti logo, keranjang, dll.</p>
 </div>
+<div id="slideshow" class="tab-pane">
+  <h4>Konten Slideshow</h4>
+
+  <form action="simpan_slideshow.php" method="POST" enctype="multipart/form-data">
+
+
+    <!-- Banner 1 -->
+    <div class="mb-3 d-flex align-items-center justify-content-between">
+      <div style="width: 48%;">
+        <label>Nama Banner 1</label>
+        <input type="text" name="nama_banner_1" class="form-control" required>
+      </div>
+      <div style="width: 48%;">
+        <label>Gambar Banner 1</label>
+        <input type="file" name="gambar_banner_1" class="form-control" accept="image/*" required>
+      </div>
+    </div>
+
+    <!-- Banner 2 -->
+    <div class="mb-3 d-flex align-items-center justify-content-between">
+      <div style="width: 48%;">
+        <label>Nama Banner 2</label>
+        <input type="text" name="nama_banner_2" class="form-control" required>
+      </div>
+      <div style="width: 48%;">
+        <label>Gambar Banner 2</label>
+        <input type="file" name="gambar_banner_2" class="form-control" accept="image/*" required>
+      </div>
+    </div>
+
+    <!-- Banner 3 -->
+    <div class="mb-3 d-flex align-items-center justify-content-between">
+      <div style="width: 48%;">
+        <label>Nama Banner 3</label>
+        <input type="text" name="nama_banner_3" class="form-control" required>
+      </div>
+      <div style="width: 48%;">
+        <label>Gambar Banner 3</label>
+        <input type="file" name="gambar_banner_3" class="form-control" accept="image/*" required>
+      </div>
+    </div>
+
+    <!-- Tombol Simpan -->
+    <button type="submit" class="btn btn-primary mt-3">Simpan Slideshow</button>
+  </form>
+</div>
+
+
 
 
             

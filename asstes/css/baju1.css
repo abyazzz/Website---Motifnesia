@@ -232,3 +232,37 @@ body {
   width: 100%;
   height: 180px;
 }
+
+.ulasan {
+  margin-top: 30px;
+  background: #f2f2f2;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+.ulasan h2 {
+  margin-bottom: 10px;
+}
+.rata-rata {
+  font-size: 18px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ulasan-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.ulasan-item {
+  background: #fff;
+  padding: 10px 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+
+  box-shadow: 0 0 8px 1px rgb(214, 214, 214);
+}
+.ulasan-item p {
+  margin: 3px 0;
+}

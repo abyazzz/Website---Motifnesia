@@ -39,6 +39,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tambah_favorit'])) {
         </script>";
 }
 
+$ulasanQuery = "SELECT u.nama_lengkap, ul.rating, ul.deskripsi
+FROM ulasan_pelanggan ul
+JOIN users u ON ul.user_id = u.id
+WHERE ul.product_id = $id";
+$ulasan = mysqli_query($conn, $ulasanQuery);
+
+$rataRating = 0;
+$jumlahUlasan = mysqli_num_rows($ulasan);
+if ($jumlahUlasan > 0) {
+    $total = 0;
+    $ulasanData = [];
+    while ($row = mysqli_fetch_assoc($ulasan)) {
+        $ulasanData[] = $row;
+        $total += $row['rating'];
+    }
+    $rataRating = round($total / $jumlahUlasan, 1);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -126,6 +144,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tambah_favorit'])) {
           <h2>Deskripsi</h2>
         <?= $dataProduk["deskripsi"]; ?>
         </div>
+      </div>
+      <div class="ulasan">
+        <h2>Ulasan Produk</h2>
+        <?php if ($jumlahUlasan === 0): ?>
+          <p>Belum ada ulasan untuk produk ini.</p>
+        <?php else: ?>
+          <div class="rata-rata">
+            <i class="fa-solid fa-star"></i>
+            <span><?= $rataRating ?></span> dari <?= $jumlahUlasan ?> ulasan
+          </div>
+          <div class="ulasan-list">
+            <?php foreach ($ulasanData as $ul): ?>
+              <div class="ulasan-item">
+                <p><strong><?= htmlspecialchars($ul['nama_lengkap']) ?></strong></p>
+                <p><i class="fa-solid fa-star"></i> <?= $ul['rating'] ?></p>
+                <p><?= htmlspecialchars($ul['deskripsi']) ?></p>
+
+              </div>
+            <?php endforeach; ?>
+          </div>
+        <?php endif; ?>
       </div>
       <div class="bawah">
         <div class="barang-barang">

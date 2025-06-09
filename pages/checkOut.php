@@ -64,6 +64,13 @@ foreach ($checkout_items as $item) {
         <label>Alamat:</label>
         <input type="text" name="alamat" id="alamat" required />
       </div>
+      <?php foreach ($produk_data as $produk): ?>
+        <input type="hidden" name="produk_id[]" value="<?= $produk['id'] ?>">
+        <input type="hidden" name="ukuran[]" value="<?= $produk['ukuran'] ?>">
+        <input type="hidden" name="qty[]" value="<?= $produk['qty'] ?>">
+        <input type="hidden" name="harga[]" value="<?= $produk['harga'] ?>">
+        <input type="hidden" name="produk_nama[]" value="<?= $produk['nama'] ?>">
+      <?php endforeach; ?>
 
       <div class="section produk">
         <?php foreach ($produk_data as $produk): ?>
