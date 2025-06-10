@@ -3,6 +3,9 @@
   $about = mysqli_query($conn, "SELECT * FROM about_us LIMIT 1");
   $data = mysqli_fetch_assoc($about);
   
+  $konten_icon = mysqli_query($conn, "SELECT * FROM konten_statis LIMIT 1");
+  $icon = mysqli_fetch_assoc($konten_icon);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -158,61 +161,82 @@
   </form>
 </div>
 
-<div id="icon" class="tab-pane">
-  <h4>Konten Icon</h4>
-  <p>Ini adalah konten icon-icon seperti logo, keranjang, dll.</p>
-</div>
-<div id="slideshow" class="tab-pane">
-  <h4>Konten Slideshow</h4>
+      <div id="icon" class="tab-pane">
+        <h4>Konten Icon</h4>
+        <form action="simpan_kontenicon.php" method="POST" enctype="multipart/form-data">
 
-  <form action="simpan_slideshow.php" method="POST" enctype="multipart/form-data">
+          <div class="mb-3">
+            <label for="logo" class="form-label">Logo</label><br>
+            <?php if (!empty($icon['logo'])): ?>
+              <img src="<?= $icon['logo'] ?>" width="100" alt="Logo Preview"><br>
+            <?php endif; ?>
+            <input type="file" name="logo" class="form-control">
+          </div>
 
+          <div class="mb-3">
+            <label for="keranjang" class="form-label">Class Icon Keranjang</label>
+            <input type="text" name="keranjang" class="form-control" value="<?= htmlspecialchars($icon['keranjang'] ?? '') ?>">
+          </div>
 
-    <!-- Banner 1 -->
-    <div class="mb-3 d-flex align-items-center justify-content-between">
-      <div style="width: 48%;">
-        <label>Nama Banner 1</label>
-        <input type="text" name="nama_banner_1" class="form-control" required>
+          <div class="mb-3">
+            <label for="favorit" class="form-label">Class Icon Favorit</label>
+            <input type="text" name="favorit" class="form-control" value="<?= htmlspecialchars($icon['favorit'] ?? '') ?>">
+          </div>
+
+          <div class="mb-3">
+            <label for="rating" class="form-label">Class Icon Rating</label>
+            <input type="text" name="rating" class="form-control" value="<?= htmlspecialchars($icon['rating'] ?? '') ?>">
+          </div>
+
+          <button type="submit" class="btn btn-primary">Simpan Icon</button>
+        </form>
       </div>
-      <div style="width: 48%;">
-        <label>Gambar Banner 1</label>
-        <input type="file" name="gambar_banner_1" class="form-control" accept="image/*" required>
-      </div>
-    </div>
+    <div id="slideshow" class="tab-pane">
+      <h4>Konten Slideshow</h4>
 
-    <!-- Banner 2 -->
-    <div class="mb-3 d-flex align-items-center justify-content-between">
-      <div style="width: 48%;">
-        <label>Nama Banner 2</label>
-        <input type="text" name="nama_banner_2" class="form-control" required>
-      </div>
-      <div style="width: 48%;">
-        <label>Gambar Banner 2</label>
-        <input type="file" name="gambar_banner_2" class="form-control" accept="image/*" required>
-      </div>
-    </div>
-
-    <!-- Banner 3 -->
-    <div class="mb-3 d-flex align-items-center justify-content-between">
-      <div style="width: 48%;">
-        <label>Nama Banner 3</label>
-        <input type="text" name="nama_banner_3" class="form-control" required>
-      </div>
-      <div style="width: 48%;">
-        <label>Gambar Banner 3</label>
-        <input type="file" name="gambar_banner_3" class="form-control" accept="image/*" required>
-      </div>
-    </div>
-
-    <!-- Tombol Simpan -->
-    <button type="submit" class="btn btn-primary mt-3">Simpan Slideshow</button>
-  </form>
-</div>
+      <form action="simpan_slideshow.php" method="POST" enctype="multipart/form-data">
 
 
+        <!-- Banner 1 -->
+        <div class="mb-3 d-flex align-items-center justify-content-between">
+          <div style="width: 48%;">
+            <label>Nama Banner 1</label>
+            <input type="text" name="nama_banner_1" class="form-control" required>
+          </div>
+          <div style="width: 48%;">
+            <label>Gambar Banner 1</label>
+            <input type="file" name="gambar_banner_1" class="form-control" accept="image/*" required>
+          </div>
+        </div>
 
+        <!-- Banner 2 -->
+        <div class="mb-3 d-flex align-items-center justify-content-between">
+          <div style="width: 48%;">
+            <label>Nama Banner 2</label>
+            <input type="text" name="nama_banner_2" class="form-control" required>
+          </div>
+          <div style="width: 48%;">
+            <label>Gambar Banner 2</label>
+            <input type="file" name="gambar_banner_2" class="form-control" accept="image/*" required>
+          </div>
+        </div>
 
-            
+        <!-- Banner 3 -->
+        <div class="mb-3 d-flex align-items-center justify-content-between">
+          <div style="width: 48%;">
+            <label>Nama Banner 3</label>
+            <input type="text" name="nama_banner_3" class="form-control" required>
+          </div>
+          <div style="width: 48%;">
+            <label>Gambar Banner 3</label>
+            <input type="file" name="gambar_banner_3" class="form-control" accept="image/*" required>
+          </div>
+        </div>
+
+        <!-- Tombol Simpan -->
+        <button type="submit" class="btn btn-primary mt-3">Simpan Slideshow</button>
+      </form>
+    </div>      
         </section>
       </main>
     </div>

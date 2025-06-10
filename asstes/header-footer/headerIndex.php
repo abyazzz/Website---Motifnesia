@@ -1,3 +1,12 @@
+<?php
+require './functions/koneksi.php';
+
+$query = mysqli_query($conn, "SELECT * FROM konten_statis LIMIT 1");
+$konten = mysqli_fetch_assoc($query);
+
+
+?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -15,16 +24,21 @@
 
 <body>
     <header>
-        <div class="logo">MotifNesia</div>
+         <div class="logo">
+            <?php if (!empty($konten['logo'])): ?>
+            <img src="<?= $konten['logo'] ?>" alt="Logo" style="height: 40px;">
+
+            <?php else: ?>
+            MotifNesia
+            <?php endif; ?>
+        </div>
         <nav class="huhu">
             <ul>
                 <li><a href="index.php">Home</a></li>
                 <li><a href="pages/aboutUs.php">About Us</a></li>
-                <li><a href="ZZcontact2.html">Contact</a></li>
-                <li><a href="ZZlayanankami.html">Service</a></li>
                 <li><a href="pages/notifikasi.php">Notif</a></li>
-                <li><a href="pages/keranjang.php"><i class="fa-solid fa-cart-shopping"></i></a></li>
-                <li><a href="pages/favorit.php"><i class="fa-regular fa-heart"></i></a></li>
+                <li><a href="pages/keranjang.php"><i class="<?= $konten['keranjang'] ?>"></i></a></li>
+                <li><a href="pages/favorit.php"><i class="<?= $konten['favorit'] ?>"></i></a></li>
                 <li>
                     <?php if (isset($_SESSION['username'])): ?>
                         <a href="./pages/profileUser.php">

@@ -1,3 +1,8 @@
+
+                <li><a href="pages/keranjang.php"><i class="fa-solid fa-cart-shopping"></i></a></li>
+                <li><a href="pages/favorit.php"><i class="fa-regular fa-heart"></i></a></li>
+                <i class="fa-solid fa-star"></i>
+
 CREATE DATABASE motifnesia;
 
 USE motifnesia;
@@ -72,6 +77,8 @@ INSERT INTO keranjang (id, user_id, product_id, ukuran, qty, created_at, updated
 (7, 1, 14, NULL, 3, '2025-05-07 11:42:10', '2025-05-07 11:42:23'),
 (8, 1, 15, NULL, 2, '2025-05-07 12:10:31', '2025-05-08 18:39:15'),
 (17, 10, 15, 'M', 142, '2025-05-26 19:06:26', '2025-05-26 19:38:27');
+
+
 
 CREATE TABLE produk (
   id int(11) NOT NULL,
